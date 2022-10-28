@@ -48,15 +48,43 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("Room")]
     public GameObject GamePannel;
     bool isGaming = false;
-
+    void SetState(int nowstate)
+    {
+        if (nowstate==0)
+        {
+            StartScreen.SetActive(true);
+            LobbyScreen.SetActive(false);
+            GamePannel.SetActive(false);
+            isStart = true;
+            isLobby = false;
+            isGaming = false;
+        }
+        else if(nowstate == 1)
+        {
+            StartScreen.SetActive(false);
+            LobbyScreen.SetActive(true);
+            GamePannel.SetActive(false);
+            isStart = false;
+            isLobby = true;
+            isGaming = false;
+        }
+        else if(nowstate == 2)
+        {
+            StartScreen.SetActive(false);
+            LobbyScreen.SetActive(false);
+            GamePannel.SetActive(true);
+            isStart = false;
+            isLobby = false;
+            isGaming = true;
+        }
+    }
+    
+    #region 스타트 화면
     void Start()
     {
         Screen.SetResolution(960, 540, false);
         PhotonNetwork.ConnectUsingSettings();
-        StartScreen.SetActive(true);
-        LobbyScreen.SetActive(false);
-        isStart = true;
-        ConnectBtn.interactable = false;
+        SetState(0);
     }
 
     public override void OnConnectedToMaster()
@@ -71,17 +99,16 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     }
     public void connectToLobby() //커넥트 버튼
     { 
-        isStart = false;
         PhotonNetwork.LocalPlayer.NickName = nameField.text;
         PhotonNetwork.JoinLobby();
-        StartScreen.SetActive(false);
         myList.Clear();
     }
+    #endregion
    
+    #region 로비 화면
     public override void OnJoinedLobby()
     {
-        isLobby = true;
-        LobbyScreen.SetActive(true);
+        SetState(1);
     }
 
     public void CreateRoom() 
@@ -92,13 +119,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             return;
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
+        SetState(2);
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         print("another Room name required");
     }
 
-    #region 방목록갱신
+    
     public void MyListClick(int num)
     {
         if(num == -2) --currentPage;
@@ -135,6 +163,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+
+    #region 게임 화면
+    public override void OnJoinedRoom()
+    {
+        SetState(2);
+    }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         PV.RPC("EnteredRoom", RpcTarget.All, newPlayer);
@@ -154,4 +188,5 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             welcome.text = PhotonNetwork.LocalPlayer.NickName + "  Welcome";
         }
     }
+    #endregion
 }
