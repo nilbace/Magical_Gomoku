@@ -25,6 +25,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
                 Destroy(this.gameObject); 
         }
     }
+    
     [Header("Start")]
     public GameObject StartScreen;
     public TextMeshProUGUI status; 
@@ -48,9 +49,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("Room")]
     public GameObject GamePannel;
     bool isGaming = false;
-    void SetState(int nowstate)
+
+    enum State
     {
-        if (nowstate==0)
+        StartEnum, LobbyEnum, GameEnum
+    };
+    void SetState(State nowstate)
+    {
+        if (nowstate==State.StartEnum)
         {
             StartScreen.SetActive(true);
             LobbyScreen.SetActive(false);
@@ -59,7 +65,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             isLobby = false;
             isGaming = false;
         }
-        else if(nowstate == 1)
+        else if(nowstate == State.LobbyEnum)
         {
             StartScreen.SetActive(false);
             LobbyScreen.SetActive(true);
@@ -68,7 +74,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             isLobby = true;
             isGaming = false;
         }
-        else if(nowstate == 2)
+        else if(nowstate == State.GameEnum)
         {
             StartScreen.SetActive(false);
             LobbyScreen.SetActive(false);
@@ -84,7 +90,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         Screen.SetResolution(960, 540, false);
         PhotonNetwork.ConnectUsingSettings();
-        SetState(0);
+        SetState(State.StartEnum);
     }
 
     public override void OnConnectedToMaster()
@@ -108,7 +114,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 로비 화면
     public override void OnJoinedLobby()
     {
-        SetState(1);
+        SetState(State.LobbyEnum);
     }
 
     public void CreateRoom() 
@@ -119,7 +125,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             return;
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
-        SetState(2);
+        SetState(State.GameEnum);
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
@@ -167,7 +173,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 게임 화면
     public override void OnJoinedRoom()
     {
-        SetState(2);
+        SetState(State.GameEnum);
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
