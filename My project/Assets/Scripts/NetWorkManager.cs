@@ -41,7 +41,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     bool isLobby = false;
     [Header("RoomList")]
     public Button[] PNrooms;
-    public TextMeshProUGUI[] RoomNames;
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
     public int currentPage = 1, maxPage = 1, multiple = 5;
@@ -49,11 +48,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("Room")]
     public GameObject GamePannel;
     bool isGaming = false;
-
-    void test()
-    {
-        
-    }
 
     void Start()
     {
@@ -110,6 +104,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         if(num == -2) --currentPage;
         else if(num == -1) ++currentPage;
         else PhotonNetwork.JoinRoom(myList[multiple+num].Name);
+        MyListRenewal();
     }
 
     public void MyListRenewal()
@@ -121,7 +116,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         for(int i =0;i<5;i++)
         {
             PNrooms[i].interactable = (multiple+i<myList.Count)?true:false;
-            RoomNames[i].text = (multiple + i < myList.Count) ? myList[multiple+i].Name : "";
+            PNrooms[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? myList[multiple+i].Name : "";
         }
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -157,10 +152,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             clientNumber.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
             "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
             welcome.text = PhotonNetwork.LocalPlayer.NickName + "  Welcome";
-            for(int i = 0;i<myList.Count;i++)
-            {
-                RoomNames[i].text = myList[i].Name;
-            }
         }
     }
 }
