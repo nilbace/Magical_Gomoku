@@ -31,7 +31,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public TextMeshProUGUI status; 
     public TMP_InputField nameField;
     public Button ConnectBtn;
-    bool isStart = false;
+    bool isStarted = false;
     
 
     [Header("Lobby")]
@@ -61,7 +61,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             StartScreen.SetActive(true);
             LobbyScreen.SetActive(false);
             GamePannel.SetActive(false);
-            isStart = true;
             isLobby = false;
             isGaming = false;
         }
@@ -69,18 +68,13 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         {
             StartScreen.SetActive(false);
             LobbyScreen.SetActive(true);
-            GamePannel.SetActive(false);
-            isStart = false;
             isLobby = true;
             isGaming = false;
             welcome.text = PhotonNetwork.LocalPlayer.NickName + "  Welcome";
         }
         else if(nowstate == State.GameEnum)
         {
-            StartScreen.SetActive(false);
-            LobbyScreen.SetActive(false);
             GamePannel.SetActive(true);
-            isStart = false;
             isLobby = false;
             isGaming = true;
         }
@@ -106,6 +100,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         status.color= Color.green;
         ConnectBtn.interactable = true;
+        if(isStarted)
+        PhotonNetwork.JoinLobby();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -117,6 +113,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.NickName = nameField.text;
         PhotonNetwork.JoinLobby();
         myList.Clear();
+        isStarted = true;
     }
     #endregion
    
@@ -124,6 +121,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         SetState(State.LobbyEnum);
+        
+        MyListRenewal();
         myList.Clear();
     }
 
@@ -207,7 +206,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public void ExitGame()
     {
         PhotonNetwork.LeaveRoom();
-        SetState(State.LobbyEnum);
+        GamePannel.SetActive(false);
     }
 
     #endregion
