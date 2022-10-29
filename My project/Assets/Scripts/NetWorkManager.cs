@@ -22,7 +22,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         else
         {
             if (instance != this)
-                Destroy(this.gameObject); 
+                Destroy(this.gameObject);
         }
     }
     
@@ -44,7 +44,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public Button[] PNrooms;
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
-    public int currentPage = 1, maxPage = 1, multiple = 5;
+    int currentPage = 1, maxPage = 1, multiple = 5;
 
     [Header("Room")]
     public GameObject GamePannel;
@@ -97,7 +97,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 스타트 화면
     void Start()
     {
-        Screen.SetResolution(960, 540, false);
+        Screen.SetResolution(500, 800, false);
         PhotonNetwork.ConnectUsingSettings();
         SetState(State.StartEnum);
     }
