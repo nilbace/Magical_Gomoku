@@ -73,6 +73,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             isStart = false;
             isLobby = true;
             isGaming = false;
+            welcome.text = PhotonNetwork.LocalPlayer.NickName + "  Welcome";
         }
         else if(nowstate == State.GameEnum)
         {
@@ -85,6 +86,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
     }
     
+    void Update()
+    {   if(SceneManager.GetActiveScene().buildIndex==0)
+        status.text = PhotonNetwork.NetworkingClient.State.ToString();
+        if(isLobby)
+        clientNumber.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
+            "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
+    }
+
     #region 스타트 화면
     void Start()
     {
@@ -115,6 +124,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         SetState(State.LobbyEnum);
+        myList.Clear();
     }
 
     public void CreateRoom() 
@@ -147,10 +157,20 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         nextPage.interactable = (currentPage == 1);
 
         multiple = (currentPage-1)*5;
+
         for(int i =0;i<5;i++)
         {
-            PNrooms[i].interactable = (multiple+i<myList.Count)?true:false;
-            PNrooms[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? myList[multiple+i].Name : "";
+            if(multiple + i < myList.Count)
+            {
+                PNrooms[i].interactable = (myList[multiple+i].PlayerCount == 1) ? true : false;
+                PNrooms[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text
+                 = (myList[multiple+i].PlayerCount == 1) ? myList[multiple+i].Name : "Full";                               
+            }
+            else
+            {
+                PNrooms[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Empty Room";
+                PNrooms[i].interactable = false;
+            }
         }
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -183,16 +203,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         print(otherPlayer.NickName+"님이 입장하셨습니다.");
     }
-    void Update()
-    {   if(SceneManager.GetActiveScene().buildIndex==0)
-        status.text = PhotonNetwork.NetworkingClient.State.ToString();
-
-        if(isLobby)
-        {
-            clientNumber.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
-            "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
-            welcome.text = PhotonNetwork.LocalPlayer.NickName + "  Welcome";
-        }
+    
+    public void ExitGame()
+    {
+        PhotonNetwork.LeaveRoom();
+        SetState(State.LobbyEnum);
     }
+
     #endregion
 }
