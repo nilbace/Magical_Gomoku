@@ -11,6 +11,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
     public static NetWorkManager instance = null; 
+    public TextMeshProUGUI status; 
 
     private void Awake() //싱글턴
     {
@@ -26,104 +27,100 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
     }
     
-    [Header("Start")]
-    public GameObject StartScreen;
-    public TextMeshProUGUI status; 
-    public TMP_InputField nameField;
-    public Button ConnectBtn;
-    bool isStarted = false;
+    [Header("reName")]
+    public GameObject changeNamePannel;
+    public TMP_InputField changenameInputfield;
     
+    [Header("Start")]
+    public GameObject StartPannel;
+    public Button gotoSchoolBTN;
 
     [Header("Lobby")]
-    public GameObject LobbyScreen;
+    public GameObject LobbyPannel;
     public TMP_InputField roomnameField;
-    public TextMeshProUGUI welcome;
-    public TextMeshProUGUI clientNumber;
+    public TextMeshProUGUI welcomeTMP;
+    public TextMeshProUGUI clientNumberTMP;
     bool isLobby = false;
-    [Header("RoomList")]
     public Button[] PNrooms;
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, maxPage = 1, multiple = 5;
 
-    [Header("Room")]
+    [Header("Game")]
     public GameObject GamePannel;
     bool isGaming = false;
-
-    enum State
-    {
-        StartEnum, LobbyEnum, GameEnum
-    };
-    void SetState(State nowstate)
-    {
-        if (nowstate==State.StartEnum)
-        {
-            StartScreen.SetActive(true);
-            LobbyScreen.SetActive(false);
-            GamePannel.SetActive(false);
-            isLobby = false;
-            isGaming = false;
-        }
-        else if(nowstate == State.LobbyEnum)
-        {
-            StartScreen.SetActive(false);
-            LobbyScreen.SetActive(true);
-            isLobby = true;
-            isGaming = false;
-            welcome.text = PhotonNetwork.LocalPlayer.NickName + "  Welcome";
-        }
-        else if(nowstate == State.GameEnum)
-        {
-            GamePannel.SetActive(true);
-            isLobby = false;
-            isGaming = true;
-        }
-    }
-    
+  
     void Update()
-    {   if(SceneManager.GetActiveScene().buildIndex==0)
-        status.text = PhotonNetwork.NetworkingClient.State.ToString();
-        if(isLobby)
-        clientNumber.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
+    {   
+        if(LobbyPannel.activeSelf)
+        {
+            clientNumberTMP.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
             "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
+            welcomeTMP.text = PhotonNetwork.LocalPlayer.NickName + "님 환영합니다";
+        }
+
+        if(GamePannel.activeSelf && PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount==2)
+        {
+            status.text = "실습중";
+        }
     }
 
     #region 스타트 화면
+    
     void Start()
     {
-        Screen.SetResolution(500, 800, false);
+        //Screen.SetResolution(1080, 1920, false);
+        Screen.SetResolution(540, 960, false);
         PhotonNetwork.ConnectUsingSettings();
-        SetState(State.StartEnum);
+        status.color = Color.magenta; status.text = "연결중";
+        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;
     }
 
     public override void OnConnectedToMaster()
     {
         status.color= Color.green;
-        ConnectBtn.interactable = true;
-        if(isStarted)
-        PhotonNetwork.JoinLobby();
+        status.text = "학교가는중";
+        gotoSchoolBTN.interactable=true;
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         status.color = Color.red;
+        status.text = "연결실패 재접속해주세요";
     }
-    public void connectToLobby() //커넥트 버튼
+    public void gotoMagicSchoolBTN() //마법학교로 버튼
     { 
-        PhotonNetwork.LocalPlayer.NickName = nameField.text;
-        PhotonNetwork.JoinLobby();
-        myList.Clear();
-        isStarted = true;
+        if(PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.JoinLobby();
+            myList.Clear();
+        }
     }
+
+    public void QuitGameBTN() //나가기 버튼
+    {
+        Application.Quit();
+    }
+
+    public void OptionBTN() //설정 버튼
+    {
+        printScreenString("미개발상태");
+    }
+
+    public void productionStaffBTN() //제작진 버튼
+    {
+        printScreenString("미개발상태");
+    }
+
     #endregion
    
     #region 로비 화면
     public override void OnJoinedLobby()
     {
-        SetState(State.LobbyEnum);
-        
+        closeAllPannel(); LobbyPannel.SetActive(true);
         MyListRenewal();
         myList.Clear();
+        status.text="실습실 가는중";
     }
 
     public void CreateRoom() 
@@ -134,7 +131,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             return;
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
-        SetState(State.GameEnum);
+        closeAllPannel(); GamePannel.SetActive(true);
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
@@ -192,22 +189,44 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 게임 화면
     public override void OnJoinedRoom()
     {
-        SetState(State.GameEnum);
-    }
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        PV.RPC("EnteredRoom", RpcTarget.All, newPlayer);
-    }
-    [PunRPC] void EnteredRoom(Player otherPlayer)
-    {
-        print(otherPlayer.NickName+"님이 입장하셨습니다.");
+        closeAllPannel();
+        GamePannel.SetActive(true);
+        status.text="실습 상대 기다리는중";
     }
     
-    public void ExitGame()
+    
+    
+    public void ExitGamePannel()
     {
         PhotonNetwork.LeaveRoom();
-        GamePannel.SetActive(false);
+        closeAllPannel(); LobbyPannel.SetActive(true);
     }
 
+    #endregion
+
+    #region 잡다한 코드들
+    void closeAllPannel() //모두 닫기
+    {
+        StartPannel.SetActive(false);
+        LobbyPannel.SetActive(false);
+        GamePannel.SetActive(false);
+    }
+    
+    [Header("택스트 경고")]
+    public GameObject WarningText;
+
+    public void printScreenString(string str)
+    {
+        StartCoroutine(printString(str));
+    }
+
+    IEnumerator printString(string str)
+    {
+        var textInfo = Instantiate(WarningText);
+        var text = textInfo.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
+        text.text = str;
+        yield return new WaitForSeconds(1f);
+        Destroy(textInfo);
+    }
     #endregion
 }
