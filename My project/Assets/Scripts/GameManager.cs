@@ -17,13 +17,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     public bool usingCard = false;
     public NetWorkManager netWorkManager;
     bool coinstossed = false;
+    public bool isMyTurn = false;
 
     enum stoneColor{
         black = 1,
         white = 2
     }
     private void Start() {
-        resetGameData(); //빈칸으로 초기화, interactable false
+        resetGameData(); //빈칸으로 초기화, 못만지게함
         reNewalBoard();
     }
     private void Update() {
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [PunRPC] void startMyTurn()
     {
+        isMyTurn = true;
         for(int i = 0;i <81;i++)
         {
             if(gomokuData[i]==0) gomokuTable[i].interactable=true;
@@ -65,13 +67,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                WaitUntilTurnEnd();
                 PV.RPC("putBlackStone", RpcTarget.AllBuffered, place);
                 
             }
             else
             {
-                WaitUntilTurnEnd();
                 PV.RPC("putWhilteStone", RpcTarget.AllBuffered, place);
             }
         }
@@ -79,13 +79,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [PunRPC] void putBlackStone(int place)
     {
-        gomokuData[place] = 1;
+        gomokuData[place] = (int)stoneColor.black;
         reNewalBoard();
     }
 
     [PunRPC] void putWhilteStone(int place)
     {
-        gomokuData[place] = 2;
+        gomokuData[place] = (int)stoneColor.white;
         reNewalBoard();
     }
 
@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         
         //이제 오목 완성됐는지 검사
 
-        while(checkGomoku((int)stoneColor.black)>=0) //검은돌 검사
+        if(checkGomoku((int)stoneColor.black)>=0) //검은돌 검사
         {
             switch(checkGomoku((int)stoneColor.black))
             {
@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             } 
         }
 
-        while(checkGomoku((int)stoneColor.white)>=0) //흰돌 검사
+        if(checkGomoku((int)stoneColor.white)>=0) //흰돌 검사
         {
             switch(checkGomoku((int)stoneColor.white))
             {
@@ -204,7 +204,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 break;   
             } 
         }
-        if(checkGomoku((int)stoneColor.white)<0 && checkGomoku((int)stoneColor.black)<0) endMyTurn();
+        if(isMyTurn && checkGomoku((int)stoneColor.white)<0 && checkGomoku((int)stoneColor.black)<0) endMyTurn();
     }
 
     enum dir{
@@ -256,10 +256,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         for(int i = 4; i < 9; i++) // ↙ 3
         {
-            for(int j = 0; i <5;j++)
+            for(int j = 0; j <5;j++)
             {
-                if(gomokuData[i+j*9]==color && gomokuData[i+j*9+8]==color && gomokuData[i+j*9+16]==color &&
-                    gomokuData[i+j*9+24]==color &&gomokuData[i+j*9+32]==color)
+                if(gomokuData[i+(j*9)]==color && gomokuData[i+(j*9) +8]==color && gomokuData[i+(j*9)+16]==color &&
+                    gomokuData[i+ (j*9) +24]==color &&gomokuData[i+(j*9) +32]==color)
                 {   
                     deleteStartNum = i+j*9;
                     return (int)dir.rightdownDir;
@@ -282,6 +282,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     void endMyTurn()
     {
+        isMyTurn = false;
+        for(int i = 0;i <81;i++)
+        {
+            gomokuTable[i].interactable=false;
+            //카드 던지기 가능 비활성화
+        }
         PV.RPC("startMyTurn", RpcTarget.OthersBuffered);
     }
     void resetGameData()

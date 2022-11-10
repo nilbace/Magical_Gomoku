@@ -40,15 +40,13 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public TMP_InputField roomnameField;
     public TextMeshProUGUI welcomeTMP;
     public TextMeshProUGUI clientNumberTMP;
-    bool isLobby = false;
     public Button[] PNrooms;
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
-    int currentPage = 1, maxPage = 1, multiple = 5;
+    int currentPage = 1, multiple = 5;
 
     [Header("Game")]
     public GameObject GamePannel;
-    bool isGaming = false;
   
     void Update()
     {   
