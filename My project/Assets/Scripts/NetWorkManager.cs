@@ -37,6 +37,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("Start")]
     public GameObject StartPannel;
     public Button gotoSchoolBTN;
+    [Header("GameEndPannel")]
+    public GameObject GameEndPannel;
 
     [Header("Lobby")]
     public GameObject LobbyPannel;
@@ -132,7 +134,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     public void QuitGameBTN() //나가기 버튼
     {
-        Application.Quit();
+        closeAllPannel();
+        GameEndPannel.SetActive(true);
     }
 
     public void SettingBTN() //설정 버튼
@@ -148,6 +151,20 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     #endregion
    
+    #region 게임종료패널
+    public void EndPannelYesBTN()
+    {
+        Application.Quit();
+    }
+
+    public void EndPannelNoBTN()
+    {
+        closeAllPannel();
+        StartPannel.SetActive(true);
+    }
+
+    #endregion
+    
     #region 로비 화면
 
     public void toStartPannelBTN()
@@ -250,6 +267,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         SettingPannel.SetActive(false);
         StartPannel.SetActive(false);
+        GameEndPannel.SetActive(false);
         LobbyPannel.SetActive(false);
         GamePannel.SetActive(false);
     }
