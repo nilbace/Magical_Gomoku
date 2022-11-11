@@ -6,12 +6,15 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
+
 
 public class NetWorkManager : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
     public static NetWorkManager instance = null; 
     public TextMeshProUGUI status; 
+    
 
     private void Awake() //싱글턴
     {
@@ -27,8 +30,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
     }
     
-    [Header("reName")]
-    public GameObject changeNamePannel;
+    [Header("Setting")]
+    public GameObject SettingPannel;
     public TMP_InputField changenameInputfield;
     
     [Header("Start")]
@@ -63,6 +66,36 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
     }
 
+    #region 세팅화면
+    public void closeSettingPannel()
+    {
+        closeAllPannel(); StartPannel.SetActive(true);
+
+    }
+
+    public void prologueReview()
+    {
+        printScreenString("미구현");
+
+    }
+
+    public void howToPlayReview()
+    {
+        printScreenString("미구현");
+
+    }
+
+    public void changenameBTN()
+    {
+        playerData.name = changenameInputfield.text;
+        SavePlayerDataToJson();
+        PhotonNetwork.NickName = playerData.name;
+        printScreenString("이름이 변경되었습니다");
+    }
+
+    #endregion
+
+
     #region 스타트 화면
     
     void Start()
@@ -72,6 +105,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
         status.color = Color.magenta; status.text = "연결중";
         closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;
+        LoadPlayerDatafromJson();
     }
 
     public override void OnConnectedToMaster()
@@ -79,6 +113,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         status.color= Color.green;
         status.text = "학교가는중";
         gotoSchoolBTN.interactable=true;
+        PhotonNetwork.LocalPlayer.NickName = playerData.name;
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -100,9 +135,10 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         Application.Quit();
     }
 
-    public void OptionBTN() //설정 버튼
+    public void SettingBTN() //설정 버튼
     {
-        printScreenString("미개발상태");
+        closeAllPannel();
+        SettingPannel.SetActive(true);
     }
 
     public void productionStaffBTN() //제작진 버튼
@@ -113,6 +149,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #endregion
    
     #region 로비 화면
+
+    public void toStartPannelBTN()
+    {
+        closeAllPannel();
+        StartPannel.SetActive(true);
+    }
     public override void OnJoinedLobby()
     {
         closeAllPannel(); LobbyPannel.SetActive(true);
@@ -130,6 +172,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
         closeAllPannel(); GamePannel.SetActive(true);
+        
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
@@ -205,6 +248,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 잡다한 코드들
     void closeAllPannel() //모두 닫기
     {
+        SettingPannel.SetActive(false);
         StartPannel.SetActive(false);
         LobbyPannel.SetActive(false);
         GamePannel.SetActive(false);
@@ -226,5 +270,28 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1f);
         Destroy(textInfo);
     }
+    public PlayerData playerData;
+    
+    [ContextMenu("To Json Data")]public void SavePlayerDataToJson()
+    {
+        string jsonData = JsonUtility.ToJson(playerData);
+        string path = Path.Combine(Application.dataPath,"playerData.json");
+        File.WriteAllText(path, jsonData);
+    }
+
+    public void LoadPlayerDatafromJson()
+    {
+        string path = Path.Combine(Application.dataPath,"playerData.json");
+        string jsonData = File.ReadAllText(path);
+        playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+    }
+
     #endregion
+}
+
+[System.Serializable]
+public class PlayerData
+{
+    public string name;
+    public bool playeraHasPlayedTuitorial = false;
 }
