@@ -45,6 +45,7 @@ MonoBehaviour:
   - putBlackStone
   - startMyTurn
   - putWhilteStone
+  - AddFiveCard
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

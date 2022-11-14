@@ -250,6 +250,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         closeAllPannel();
         GamePannel.SetActive(true);
         status.text="실습 상대 기다리는중";
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
     
     
