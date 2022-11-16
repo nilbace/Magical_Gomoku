@@ -7,12 +7,26 @@ using TMPro;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
+    public static PlayerManager myPlayerManager = null;
+    public static PlayerManager enemyPlayerManager = null;
+    private void Awake() {
+        if(myPlayerManager == null)
+        {
+            myPlayerManager = this;
+        }
+        else
+        {
+            enemyPlayerManager = this;
+        }
+    }
+
     public List<CardData> cardDataBuffer;
     public cardDataSO cardDataSO;
     public GameObject cardPrefab;
     public PhotonView PV;
 
     public List<Card> myCards;
+    public List<GameObject> myCardsGameObj;
     public Vector3 myCardsLeft;
     public Vector3 myCardsRight;
 
@@ -34,6 +48,31 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
 
         AddFiveCard();
+    }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.D) && PV.IsMine)
+        {
+            PV.RPC("destroyCard", RpcTarget.AllBuffered, 0);
+        }
+    }
+
+    
+    public void destroyMe(int index)
+    {
+        PV.RPC("destroyCard", RpcTarget.AllBuffered, index);
+    }
+
+    [PunRPC] void destroyCard(int index)
+    {
+        Destroy(myCardsGameObj[index]);
+        myCardsGameObj.RemoveAt(index);
+        myCards.RemoveAt(index);
+        for(int i = 0;i<myCards.Count;i++)
+        {
+            myCards[i].myHandIndex = i;
+        }
+        CardAlignment();
     }
 
     public CardData PopItem()
@@ -64,11 +103,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
 
     
-
+    int handcount =0;
     void AddCard()
     {
         var cardObject = Instantiate(cardPrefab, new Vector2(-20,-20), Quaternion.identity);
         var card = cardObject.GetComponent<Card>();
+        card.myHandIndex = handcount; handcount++;
+        myCardsGameObj.Add(cardObject);
         card.Setup(PopItem(), PV.IsMine);
         myCards.Add(card);
 
@@ -88,15 +129,33 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             }
         }
     }
+    public void AlignAfter1sec()
+    {
+        StartCoroutine(CorAlignAfter1sec());
+    }
 
-    void CardAlignment()
+    IEnumerator CorAlignAfter1sec()
+    {
+        yield return new WaitForSeconds(1f);
+        PV.RPC("CardAlignment", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC] void CardAlignment()
     {
         float gap = myCardsRight.x - myCardsLeft.x;
-        float interval = gap/(myCards.Count - 1);
-        for(int i = 0;i<myCards.Count; i++)
+        if(myCards.Count==1)
         {
-            myCards[i].transform.position = myCardsLeft + 
-            new Vector3(interval*i,0,0);
+            if(PV.IsMine)    myCards[0].transform.position = new  Vector3(1,-4.2f,0);
+            else myCards[0].transform.position = new Vector3(1, 4.2f, 0);
+        }
+        else
+        {
+            float interval = gap/(myCards.Count - 1);
+            for(int i = 0;i<myCards.Count; i++)
+            {
+                myCards[i].transform.position = myCardsLeft + 
+                new Vector3(interval*i,0,0);
+            }
         }
     }
 

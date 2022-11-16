@@ -15,9 +15,12 @@ public class Card : MonoBehaviourPunCallbacks
     public Sprite cardBack;
 
     public CardData cardData;
+    public int myHandIndex = -1;
 
     Vector3 originPos;
     Vector3 offset;
+
+    
     public void Setup(CardData cardData, bool isMine)
     {
         this.cardData = cardData;
@@ -66,8 +69,21 @@ public class Card : MonoBehaviourPunCallbacks
     }
 
     private void OnMouseUp() {
-        if(isMine) transform.position = originPos;
+        if(isMine) 
+        {
+            transform.position = originPos;
+
+            if(GameManager.instance.canuseCard && MouseWorldPosition().y>0) //발동
+            {
+                GameManager.instance.setMyuseCardStatus(cardData.indexNum);
+                GameManager.instance.canuseCard= false;
+                PlayerManager.myPlayerManager.destroyMe(myHandIndex);
+            }
+        }
+
     }
+
+
 
     Vector3 MouseWorldPosition()
     {

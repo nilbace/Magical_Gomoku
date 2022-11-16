@@ -150,7 +150,7 @@ MonoBehaviour:
   - {fileID: 5364840911676007530}
   - {fileID: 5364840912451857922}
   - {fileID: 5364840913399285708}
-  sortingLayerName: 
+  sortingLayerName: Cards
 --- !u!212 &5364840912449116242
 SpriteRenderer:
   m_ObjectHideFlags: 0

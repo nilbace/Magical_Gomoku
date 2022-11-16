@@ -9,31 +9,44 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    //싱글턴
+    public static GameManager instance;
+    private void Awake() {
+        instance = this;
+    }
+
+
     public PhotonView PV;
     public Button[] gomokuTable;
-    public Sprite whiteStone;  //2
-    public Sprite blackStone; //1
+    public Sprite whiteStone; 
+    public Sprite blackStone; 
     public int[] gomokuData = new int[81];
-    public bool usingCard = false;
-    public NetWorkManager netWorkManager;
     bool coinstossed = false;
-    public bool isMyTurn = false;
+    
+    int deleteStartNum;
+    
 
-    enum stoneColor{
-        black = 1,
-        white = 2
-    }
+
+    
+    enum stoneColor{ black = 1, white = 2 }
+
+    public bool canuseCard; //카드를 드래그했을때 써지는지 여부 금방금방 꺼짐
+    
     private void Start() {
-        resetGameData(); //빈칸으로 초기화, 못만지게함
-        reNewalBoard();
+        unInteractableAllBTN();
+        repaintBoard();
     }
+
     private void Update() {
-        if(netWorkManager.GamePannel.activeSelf && !coinstossed &&PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount ==2)
+        if(NetWorkManager.instance.GamePannel.activeSelf && !coinstossed &&PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount ==2)
         {
             coinstossed = true;
             if(PhotonNetwork.IsMasterClient)  coinToss();
         }
     }
+
+    #region 턴관련
+    public bool isMyTurn = false;
 
     void coinToss()
     {
@@ -51,52 +64,159 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC] void startMyTurn()
     {
         isMyTurn = true;
+        canuseCard = true;
         for(int i = 0;i <81;i++)
         {
             if(gomokuData[i]==0) gomokuTable[i].interactable=true;
-            
-            //카드 던지기 가능
         }
-        netWorkManager.printScreenString("나의 턴");
+        NetWorkManager.instance.printScreenString("나의 턴");
     }
-    
+
+    void endMyTurn()
+    {
+        isMyTurn = false;
+        canuseCard = false;
+        for(int i = 0;i <81;i++)
+        {
+            gomokuTable[i].interactable=false;
+        }
+        PV.RPC("startMyTurn", RpcTarget.OthersBuffered);
+    }
+    #endregion
+
+    #region 오목관련+카드
+    enum MyHandStatus{
+        cannotUseCard = -1,
+        reassignment3_3, deleteVertical, putStoneTwice,} // 지금이 어떤 상태인지 카드를 쓰고 있는 중인지 아닌지
+
+    public void setMyuseCardStatus(int index)
+    {
+        myHandStatus = (MyHandStatus)index;
+        interactableAllBTN();
+    }
+
+    [SerializeField] MyHandStatus myHandStatus = MyHandStatus.cannotUseCard;
+
     public void touchBoard(int place)
     {
-        int i = place/9; int j = place%9;
-        if(!usingCard)
+        int i = place%9; int j = place/9;
+        if(myHandStatus == MyHandStatus.cannotUseCard)
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                PV.RPC("putBlackStone", RpcTarget.AllBuffered, place);
-                
+                PV.RPC("putStonewithoutMagic", RpcTarget.AllBuffered, place, stoneColor.black);
+                endMyTurn();
             }
             else
             {
-                PV.RPC("putWhilteStone", RpcTarget.AllBuffered, place);
+                PV.RPC("putStonewithoutMagic", RpcTarget.AllBuffered, place, stoneColor.white);
+                endMyTurn();
             }
         }
+        else
+        useMagicCard(i, j);
     }
-
+    [PunRPC] void putStonewithoutMagic(int place, stoneColor color)
+    {
+        gomokuData[place] = (int)color;
+        reNewalBoard();
+    }
     [PunRPC] void putBlackStone(int place)
     {
         gomokuData[place] = (int)stoneColor.black;
-        reNewalBoard();
+        repaintBoard();
     }
 
     [PunRPC] void putWhilteStone(int place)
     {
         gomokuData[place] = (int)stoneColor.white;
-        reNewalBoard();
+        repaintBoard();
     }
 
-    int deleteStartNum;
-    void reNewalBoard()
+    bool areaSelected = false;
+    int selectedBTNindex = -1; //선택된영역
+    public GameObject bluebox3_3;
+    void useMagicCard(int i, int j)
     {
-        for(int i = 0;i <81;i++) //아까 둔 돌 표시
+        switch(myHandStatus) 
+        {
+			case MyHandStatus.reassignment3_3:
+            {
+                if(i==0 || i ==8 || j ==0 || j == 8)
+                {
+                    NetWorkManager.instance.printScreenString("다시 선택하세요");
+                    return;
+                }
+                else
+                {
+                    if(!areaSelected || (areaSelected&& selectedBTNindex!=(i+j*9) ))
+                    {
+                        bluebox3_3.transform.position = new Vector3(-2.21f+0.55f*i, 2.21f-0.55f*j, 0);
+                        areaSelected = true;
+                        selectedBTNindex = i+j*9;
+                        NetWorkManager.instance.printScreenString("선택됨");
+                    }
+                    else
+                    {   
+                        bluebox3_3.transform.position += new Vector3(10,0,0);
+                        unInteractableAllBTN();
+                        areaSelected = false; selectedBTNindex = -1; 
+                        myHandStatus = MyHandStatus.cannotUseCard;  //초기화
+                        //시작
+                        int temp;
+                        for(int i2 = i-1; i2<=i+1; i2++) //재배치완료
+                        {
+                            for(int j2 = j-1; j2 <= j + 1; j2++)
+                            {
+                                int rand = i + Random.Range(-1,2) + (j+Random.Range(-1,2))*9;
+                                int place = i2+j2*9;
+                                temp = gomokuData[place];
+                                gomokuData[place] = gomokuData[rand];
+                                gomokuData[rand] = temp;
+                            }
+                        }
+                        
+                        for(int i2 = i-1; i2<=i+1; i2++) //재배치완료
+                        {
+                            for(int j2 = j-1; j2 <= j + 1; j2++)
+                            {
+                                int place = i2+j2*9;
+                                int tempdata = gomokuData[place];
+                                PV.RPC("ChangeData", RpcTarget.AllBuffered, place, tempdata);
+                            }
+                        }
+                        
+
+                        PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                        endMyTurn();
+                    }
+                }
+            }
+			break;
+
+			case MyHandStatus.deleteVertical:
+            {
+
+            }
+			break;
+
+			case MyHandStatus.putStoneTwice:
+			break;
+        }	
+    }
+
+    [PunRPC] void ChangeData(int place, int data)
+    {
+        gomokuData[place] = data;
+    }
+
+    [PunRPC] void repaintBoard()
+    {
+        for(int i = 0;i <81;i++)
         {
             if(gomokuData[i]==0) 
-            {
-                gomokuTable[i].GetComponent<Image>().sprite = null;
+            {   
+                gomokuTable[i].GetComponent<Image>().sprite = whiteStone;
                 Color color = gomokuTable[i].GetComponent<Image>().color;
                 color.a = 0;
                 gomokuTable[i].GetComponent<Image>().color = color;
@@ -118,6 +238,10 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gomokuTable[i].GetComponent<Image>().color = color;
             }
         }
+    }
+    [PunRPC]void reNewalBoard()
+    {
+        repaintBoard();
         
         //이제 오목 완성됐는지 검사
 
@@ -269,32 +393,39 @@ public class GameManager : MonoBehaviourPunCallbacks
         return -1;
     }
 
+    #endregion
 
-
-    void WaitUntilTurnEnd()
+    #region 잡다한 코드들
+    void interactableAllBTN()
     {
-        for(int i = 0;i <81;i++)
+        for(int i = 0;i<81;i++)
         {
-            gomokuTable[i].interactable=false;
-            //카드 던지기 가능 비활성화
+            gomokuTable[i].interactable = true;
         }
-        endMyTurn(); //임시
     }
-    void endMyTurn()
+    void unInteractableAllBTN()
     {
-        isMyTurn = false;
-        for(int i = 0;i <81;i++)
+        for(int i = 0;i<81;i++)
         {
-            gomokuTable[i].interactable=false;
-            //카드 던지기 가능 비활성화
+            gomokuTable[i].interactable = false;
         }
-        PV.RPC("startMyTurn", RpcTarget.OthersBuffered);
     }
+    
     void resetGameData()
     {
         for(int i = 0;i<81;i++)
         {
             gomokuData[i]=0; gomokuTable[i].interactable=false;
         }
+        //각 매니저 필요한거 초기화
+        PlayerManager.myPlayerManager = null;
+        PlayerManager.enemyPlayerManager = null;
     }
+
+    [PunRPC] void ReneWalData()
+    {
+        
+    }
+
+    #endregion
 }

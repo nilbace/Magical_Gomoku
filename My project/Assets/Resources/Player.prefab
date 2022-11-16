@@ -73,6 +73,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 5364840912449116237, guid: b44a99bd37a97d343b8892cc53426895, type: 3}
   PV: {fileID: 417834676260494474}
   myCards: []
+  myCardsGameObj: []
   myCardsLeft: {x: 0, y: 0, z: 0}
   myCardsRight: {x: 0, y: 0, z: 0}
 --- !u!1 &6086542188442052541
