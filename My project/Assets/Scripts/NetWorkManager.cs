@@ -52,6 +52,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     [Header("Game")]
     public GameObject GamePannel;
+    public GameObject pausePannel;
   
     void Update()
     {   
@@ -71,7 +72,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 세팅화면
     public void closeSettingPannel()
     {
-        closeAllPannel(); StartPannel.SetActive(true);
+        if(returntoPause == false)
+        {closeAllPannel(); StartPannel.SetActive(true);}
+        else
+        {
+            SettingPannel.SetActive(false);
+            pausePannel.SetActive(true);
+            returntoPause = false;
+        }
 
     }
 
@@ -189,7 +197,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
         closeAllPannel(); GamePannel.SetActive(true);
-        
+        GameManager.instance.Start();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
@@ -202,6 +210,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         if(num == -2) --currentPage;
         else if(num == -1) ++currentPage;
         else PhotonNetwork.JoinRoom(myList[multiple+num].Name);
+        GameManager.instance.Start();
         MyListRenewal();
     }
 
@@ -271,6 +280,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         GameEndPannel.SetActive(false);
         LobbyPannel.SetActive(false);
         GamePannel.SetActive(false);
+        pausePannel.SetActive(false);
     }
     
     [Header("택스트 경고")]
@@ -303,6 +313,56 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         string path = Path.Combine(Application.dataPath,"playerData.json");
         string jsonData = File.ReadAllText(path);
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+    }
+
+    #endregion
+
+    #region 게임종료, 일시정지
+
+    public void PauseBTN()
+    {
+        pausePannel.SetActive(true);
+    }
+
+    
+    public void ClosePausePannel()
+    {
+        pausePannel.SetActive(false);
+    }
+
+    public void PauseToSetting()
+    {
+        pausePannel.SetActive(false);
+        SettingPannel.SetActive(true);
+        returntoPause = true;
+    }
+    bool returntoPause = false;
+
+    public void Surrender()
+    {
+        pausePannel.SetActive(false);
+        GameManager.instance.LoseGame();
+    }
+
+    public void EndGame()
+    {
+        closeAllPannel();
+        LobbyPannel.SetActive(true);
+        PhotonNetwork.LeaveRoom();
+        StartCoroutine(afterEndGame());
+    }
+
+    IEnumerator afterEndGame()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(1f);
+            if(PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.JoinLobby();
+                break;
+            }
+        }
     }
 
     #endregion

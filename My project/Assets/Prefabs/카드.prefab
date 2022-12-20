@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 5364840912449116241}
   m_Layer: 0
   m_Name: "\uCE74\uB4DC"
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,6 +144,7 @@ MonoBehaviour:
     indexNum: 0
     cardEffectInfoText: 
     sprite: {fileID: 0}
+  myHandIndex: -1
   backRenderers:
   - {fileID: 5364840912449116242}
   middleRenderers:

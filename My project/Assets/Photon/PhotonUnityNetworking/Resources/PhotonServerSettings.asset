@@ -53,6 +53,13 @@ MonoBehaviour:
   - ReneWalData
   - repaintBoard
   - putStonewithoutMagic
+  - move3_3Box
+  - moveAreaBox
+  - AreaBox_set1_9
+  - AreaBox_set3_3
+  - AreaBox_set9_1
+  - EnemyWin
+  - GameOver
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

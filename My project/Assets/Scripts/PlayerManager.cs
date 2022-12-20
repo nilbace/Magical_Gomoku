@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
@@ -17,6 +18,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         else
         {
             enemyPlayerManager = this;
+            if(PhotonNetwork.IsMasterClient) GameManager.instance.coinToss();
         }
     }
 
@@ -177,4 +179,28 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.2f);
         AddCard();
     }
+
+
+    [Header("Health Point")]
+    public int MyHP = 3; int maxHP = 3;
+    public GameObject hp1; public GameObject hp2; public GameObject hp3;
+
+    public void GetDamaged()
+    {
+        MyHP--;
+        renewalHPBar();
+    }
+    void renewalHPBar()
+    {
+        if(MyHP==2) hp3.SetActive(false);
+        else if(MyHP==1) {hp3.SetActive(false); hp2.SetActive(false);}
+        else
+        {
+            hp3.SetActive(false); hp2.SetActive(false);
+            hp1.SetActive(false);
+            if(PV.IsMine) GameManager.instance.LoseGame();
+        }
+    }
+
+    
 }
