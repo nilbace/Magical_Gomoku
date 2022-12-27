@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int[] gomokuData = new int[81];
     
     int deleteStartNum;
-    
+    List<int> omok=new List<int>();
 
 
     
@@ -569,8 +569,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             gomokuData[i]=0; gomokuTable[i].interactable=false;
         }
         //각 매니저 필요한거 초기화
-        PlayerManager.myPlayerManager = null;
-        PlayerManager.enemyPlayerManager = null;
+        PlayerManager.myPlayerManager = PlayerManager.myPlayerManager;
+        PlayerManager.enemyPlayerManager = PlayerManager.enemyPlayerManager;
     }
 
     [PunRPC] void moveAreaBox(Vector3 newposition)

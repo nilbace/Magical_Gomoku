@@ -14,10 +14,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if(myPlayerManager == null)
         {
             myPlayerManager = this;
+            Debug.Log ("my");
         }
         else
         {
             enemyPlayerManager = this;
+            Debug.Log ("enemy");
             if(PhotonNetwork.IsMasterClient) GameManager.instance.coinToss();
         }
     }
