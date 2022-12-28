@@ -4,7 +4,7 @@ using UnityEngine;
 public class particleAttractorLinear : MonoBehaviour {
 	ParticleSystem ps;
 	ParticleSystem.Particle[] m_Particles;
-	public Vector3 target;
+	public static Vector3 target;
 	public float speed = 5f;
 	int numParticlesAlive;
 	void Start () {
@@ -22,11 +22,4 @@ public class particleAttractorLinear : MonoBehaviour {
 		}
 		ps.SetParticles(m_Particles, numParticlesAlive);
 	}
-	void OnParticleCollision(GameObject other)
-
-    { 
-        Debug.Log("파티클 충돌");
-		Debug.Log(other.gameObject.name);
-
-    }
 }

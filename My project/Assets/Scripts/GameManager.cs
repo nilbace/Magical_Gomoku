@@ -498,11 +498,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     void enemyshoot() {
-        Instantiate(shooting,charging.center,Quaternion.identity);
+        particleAttractorLinear.target=new Vector3(-2, 3.8f, 80);
+        Instantiate(shooting,charging.center+new Vector3(0,0,-70),Quaternion.identity);
     }
 
     void myshoot(){
-        Instantiate(shooting,charging.center,Quaternion.identity);
+        particleAttractorLinear.target=new Vector3(-2, -3.8f, 80);
+        Instantiate(shooting,charging.center+new Vector3(0,0,-70),Quaternion.identity);
     }
 
     enum dir{
