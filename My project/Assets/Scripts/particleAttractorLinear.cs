@@ -22,4 +22,11 @@ public class particleAttractorLinear : MonoBehaviour {
 		}
 		ps.SetParticles(m_Particles, numParticlesAlive);
 	}
+	void OnParticleCollision(GameObject other)
+
+    { 
+        Debug.Log("파티클 충돌");
+		Debug.Log(other.gameObject.name);
+
+    }
 }

@@ -362,8 +362,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gomokuData[deleteStartNum+3]=0;
                 gomokuData[deleteStartNum+4]=0;
                 charging.center=gomokuTable[deleteStartNum+2].transform.position;
-                Debug.Log(charging.center);
-                Debug.Log(gomokuTable[deleteStartNum+2].transform.position);
                 Instantiate(Part,gomokuTable[deleteStartNum+2].transform.position,gomokuTable[deleteStartNum+2].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum].transform.position, gomokuTable[deleteStartNum].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+1].transform.position, gomokuTable[deleteStartNum+1].transform.rotation);
@@ -415,10 +413,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             } 
             if(PhotonNetwork.IsMasterClient)
             {
+                Invoke("enemyshoot",1f);
                 PlayerManager.enemyPlayerManager.GetDamaged();
             }
             else
             {
+                Invoke("myshoot",1f);
                 PlayerManager.myPlayerManager.GetDamaged();
             }
         }
@@ -433,6 +433,12 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gomokuData[deleteStartNum+2]=0;
                 gomokuData[deleteStartNum+3]=0;
                 gomokuData[deleteStartNum+4]=0;
+                charging.center=gomokuTable[deleteStartNum+2].transform.position;
+                Instantiate(Part,gomokuTable[deleteStartNum+2].transform.position,gomokuTable[deleteStartNum+2].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum].transform.position, gomokuTable[deleteStartNum].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+1].transform.position, gomokuTable[deleteStartNum+1].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+3].transform.position, gomokuTable[deleteStartNum+3].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+4].transform.position, gomokuTable[deleteStartNum+4].transform.rotation);
                 break;
 
                 case 1: //  ↓방향 제거
@@ -441,6 +447,12 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gomokuData[deleteStartNum+18]=0;
                 gomokuData[deleteStartNum+27]=0;
                 gomokuData[deleteStartNum+36]=0;
+                charging.center=gomokuTable[deleteStartNum+18].transform.position;
+                Instantiate(Part,gomokuTable[deleteStartNum+18].transform.position,gomokuTable[deleteStartNum+18].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum].transform.position, gomokuTable[deleteStartNum].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+9].transform.position, gomokuTable[deleteStartNum+9].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+27].transform.position, gomokuTable[deleteStartNum+27].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+36].transform.position, gomokuTable[deleteStartNum+36].transform.rotation);
                 break;
 
                 case 2: //  ↘방향 제거
@@ -449,6 +461,12 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gomokuData[deleteStartNum+20]=0;
                 gomokuData[deleteStartNum+30]=0;
                 gomokuData[deleteStartNum+40]=0;
+                charging.center=gomokuTable[deleteStartNum+20].transform.position;
+                Instantiate(Part,gomokuTable[deleteStartNum+20].transform.position,gomokuTable[deleteStartNum+20].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum].transform.position, gomokuTable[deleteStartNum].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+10].transform.position, gomokuTable[deleteStartNum+10].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+30].transform.position, gomokuTable[deleteStartNum+30].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+40].transform.position, gomokuTable[deleteStartNum+40].transform.rotation);
                 break;
 
                 case 3: //  ↙방향 제거
@@ -457,18 +475,34 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gomokuData[deleteStartNum+16]=0;
                 gomokuData[deleteStartNum+24]=0;
                 gomokuData[deleteStartNum+32]=0;
+                charging.center=gomokuTable[deleteStartNum+16].transform.position;
+                Instantiate(Part,gomokuTable[deleteStartNum+16].transform.position,gomokuTable[deleteStartNum+16].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum].transform.position, gomokuTable[deleteStartNum].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+8].transform.position, gomokuTable[deleteStartNum+8].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+24].transform.position, gomokuTable[deleteStartNum+24].transform.rotation);
+                Instantiate(part2, gomokuTable[deleteStartNum+32].transform.position, gomokuTable[deleteStartNum+32].transform.rotation);
                 break;   
             }
             if(PhotonNetwork.IsMasterClient)
             {
+                Invoke("myshoot",1f);
                 PlayerManager.myPlayerManager.GetDamaged();
             }
             else
             {
+                Invoke("enemyshoot",1f);
                 PlayerManager.enemyPlayerManager.GetDamaged();
             } 
         }
         repaintBoard();
+    }
+
+    void enemyshoot() {
+        Instantiate(shooting,charging.center,Quaternion.identity);
+    }
+
+    void myshoot(){
+        Instantiate(shooting,charging.center,Quaternion.identity);
     }
 
     enum dir{
