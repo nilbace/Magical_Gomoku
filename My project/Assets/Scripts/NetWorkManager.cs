@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
-
+using System;
 
 public class NetWorkManager : MonoBehaviourPunCallbacks
 {
@@ -67,6 +67,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         {
             status.text = "실습중";
         }
+
+        if (Application.platform == RuntimePlatform.Android) 
+        {
+            if (Input.GetKey(KeyCode.Escape))  // 뒤로 가기 버튼
+            {
+                HandlingBackButton(); 
+            }
+        }
     }
 
     #region 세팅화면
@@ -111,7 +119,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         //Screen.SetResolution(1080, 1920, false);
-        Screen.SetResolution(540, 960, false);
+        //Screen.SetResolution(540, 960, false);
+        setResolution();
         PhotonNetwork.ConnectUsingSettings();
         status.color = Color.magenta; status.text = "연결중";
         closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;
@@ -300,19 +309,91 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         Destroy(textInfo);
     }
     public PlayerData playerData;
-    
+
+
     [ContextMenu("To Json Data")]public void SavePlayerDataToJson()
     {
-        string jsonData = JsonUtility.ToJson(playerData);
-        string path = Path.Combine(Application.dataPath,"playerData.json");
+        string path;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            path = Path.Combine(Application.persistentDataPath, "playerData.json");
+        }
+        else
+        {
+            path = Path.Combine(Application.dataPath, "playerData.json");
+        }
+        string jsonData = JsonUtility.ToJson(playerData, true);
         File.WriteAllText(path, jsonData);
     }
 
     public void LoadPlayerDatafromJson()
     {
-        string path = Path.Combine(Application.dataPath,"playerData.json");
+        string path;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            path = Path.Combine(Application.persistentDataPath, "playerData.json");
+        }
+        else
+        {
+            path = Path.Combine(Application.dataPath, "playerData.json");
+        }
+
         string jsonData = File.ReadAllText(path);
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+    }
+
+    public void setResolution()  // 해상도 16:9 고정
+    {
+        int setWidth = 1080; // 사용자 설정 너비
+        int setHeight = 1920; // 사용자 설정 높이
+
+        int deviceWidth = Screen.width; // 기기 너비 저장
+        int deviceHeight = Screen.height; // 기기 높이 저장
+
+        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWidth) * setWidth), true); // SetResolution 함수 제대로 사용하기
+
+        if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // 기기의 해상도 비가 더 큰 경우
+        {
+            float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // 새로운 너비
+            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // 새로운 Rect 적용
+
+        }
+        else // 게임의 해상도 비가 더 큰 경우
+        {
+            float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // 새로운 높이
+            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
+        }
+
+        void OnPreCull() => GL.Clear(true, true, Color.black);
+    }
+
+    // pannel에 따라 뒤로 가기 버튼 처리 (게임 버튼에 붙어있는 이벤트 함수 호출)
+    void HandlingBackButton()
+    {
+        if (SettingPannel.activeSelf == true)  // 설정 패널 열려있음
+        {
+            closeSettingPannel(); 
+        }
+        else if (StartPannel.activeSelf == true)  // 스타트화면 열려있음
+        {
+            QuitGameBTN();
+        }
+        else if (GameEndPannel.activeSelf == true)  // 게임종료패널 열려있음
+        {
+            EndPannelNoBTN();
+        }
+        else if (LobbyPannel.activeSelf == true)  // 로비패널 열려있음
+        {
+            toStartPannelBTN();
+        }
+        else if (GamePannel.activeSelf == true && pausePannel.activeSelf == false)
+        {  // 게임패널만 열려있음 (일시정지가 아닌 경우)
+            PauseBTN();
+        }
+        else if (GamePannel.activeSelf == true && pausePannel.activeSelf == true)
+        {  // 게임패널과 일시정지 모두 열려있음 (일시정지인 경우)
+            ClosePausePannel();
+        }
     }
 
     #endregion
