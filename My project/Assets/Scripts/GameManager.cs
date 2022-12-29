@@ -26,7 +26,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     int deleteStartNum;
     public ParticleSystem part;
     public ParticleSystem part2;
-    public ParticleSystem shooting;
+    public ParticleSystem myshooting;
+    public ParticleSystem enemyshooting;
 
     
     enum stoneColor{ black = 1, white = 2 }
@@ -464,12 +465,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             } 
             if(PhotonNetwork.IsMasterClient)
             {
-                Invoke("enemyshoot",1f);
+                StartCoroutine(enemyshoot());
                 PlayerManager.enemyPlayerManager.GetDamaged();
             }
             else
             {
-                Invoke("myshoot",1f);
+                StartCoroutine(myshoot());
                 PlayerManager.myPlayerManager.GetDamaged();
             }
         }
@@ -576,26 +577,26 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             if(PhotonNetwork.IsMasterClient)
             {
-                Invoke("myshoot",1f);
+                StartCoroutine(myshoot());
                 PlayerManager.myPlayerManager.GetDamaged();
             }
             else
             {
-                Invoke("enemyshoot",1f);
+                StartCoroutine(enemyshoot());
                 PlayerManager.enemyPlayerManager.GetDamaged();
             } 
         }
         
     }
 
-    void enemyshoot() {
-        particleAttractorLinear.target=new Vector3(-2, 3.8f, 80);
-        Instantiate(shooting,charging.center+new Vector3(0,0,-70),Quaternion.identity);
+    IEnumerator enemyshoot() {
+        yield return new WaitForSeconds(1f); 
+        Instantiate(enemyshooting,charging.center+new Vector3(0,0,-70),Quaternion.identity);
     }
 
-    void myshoot(){
-        particleAttractorLinear.target=new Vector3(-2, -3.8f, 80);
-        Instantiate(shooting,charging.center+new Vector3(0,0,-70),Quaternion.identity);
+    IEnumerator myshoot(){
+        yield return new WaitForSeconds(1f);
+        Instantiate(myshooting,charging.center+new Vector3(0,0,-70),Quaternion.identity);
     }
 
     enum dir{

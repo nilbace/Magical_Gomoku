@@ -43905,7 +43905,7 @@ GameObject:
   - component: {fileID: 2108757687161130156}
   - component: {fileID: 2109683131508166642}
   m_Layer: 0
-  m_Name: shooting effect
+  m_Name: enemy shooting effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44014,7 +44014,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -48729,7 +48729,7 @@ GameObject:
   - component: {fileID: 2276165962315780790}
   - component: {fileID: 2109226822683255656}
   - component: {fileID: 2109069632297674508}
-  - component: {fileID: 2170728787042928830}
+  - component: {fileID: 5520125641318032417}
   m_Layer: 0
   m_Name: Particle attractor
   m_TagString: Untagged
@@ -53467,7 +53467,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &2170728787042928830
+--- !u!114 &5520125641318032417
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53476,7 +53476,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2270618956334078940}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d41c288e575eb84aac00fc3b880a5d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 0e56f4cb8937e1244b937d2a4255b56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: -2, y: 3.8, z: 80}

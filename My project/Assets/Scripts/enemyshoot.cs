@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 [RequireComponent(typeof(ParticleSystem))]
-public class particleAttractorLinear : MonoBehaviour {
+public class enemyshoot : MonoBehaviour {
 	ParticleSystem ps;
 	ParticleSystem.Particle[] m_Particles;
-	public static Vector3 target;
+	public Vector3 target;
 	public float speed = 5f;
 	int numParticlesAlive;
 	void Start () {
