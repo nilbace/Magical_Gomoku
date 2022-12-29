@@ -14,10 +14,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if(myPlayerManager == null)
         {
             myPlayerManager = this;
+            Debug.Log ("my");
         }
         else
         {
             enemyPlayerManager = this;
+            Debug.Log ("enemy");
             if(PhotonNetwork.IsMasterClient) GameManager.instance.coinToss();
         }
     }
@@ -37,13 +39,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         transform.position = new Vector3(-2,-3.8f);
         if(PV.IsMine)
         {
-            transform.position = new Vector3(-2,-3.8f,0);
+            transform.position = new Vector3(-2,-3.8f,80);
             myCardsLeft = new Vector3(-0.5f,-4.2f,0);
             myCardsRight = new Vector3(2.24f,-4.2f,0);
         }
         else
         {
-            transform.position = new Vector3(-2,3.8f,0);
+            transform.position = new Vector3(-2,3.8f,80);
             myCardsLeft = new Vector3(-0.5f,4.2f,0);
             myCardsRight = new Vector3(2.24f,4.2f,0);
 
