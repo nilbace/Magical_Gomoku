@@ -6,6 +6,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -346,6 +347,17 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
     }
+
+    void dolmove(Image img) {
+        Vector3 tmp=img.transform.position;
+        Sequence seq=DOTween.Sequence();
+        seq.Join(img.transform.DOMove(charging.center,0.75f));
+        seq.Join(img.transform.DOScale(new Vector3(0,0,0),3f));
+        seq.Join(img.DOFade(0, 2f).SetEase(Ease.InQuad));
+        seq.Append(img.transform.DOMove(tmp,0));
+        seq.Join(img.transform.DOScale(new Vector3(1,1,1),0));
+    }
+
     
     [PunRPC]void reNewalBoard()
     {
@@ -367,6 +379,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+1].transform.position, gomokuTable[deleteStartNum+1].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+3].transform.position, gomokuTable[deleteStartNum+3].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+4].transform.position, gomokuTable[deleteStartNum+4].transform.rotation);
+                var img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+1].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+2].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+3].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+4].GetComponent<Image>();
+                dolmove(img);
                 break;
 
                 case 1: //  ↓방향 제거
@@ -381,6 +403,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+9].transform.position, gomokuTable[deleteStartNum+9].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+27].transform.position, gomokuTable[deleteStartNum+27].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+36].transform.position, gomokuTable[deleteStartNum+36].transform.rotation);
+                img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+9].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+18].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+27].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+36].GetComponent<Image>();
+                dolmove(img);
                 break;
 
                 case 2: //  ↘방향 제거
@@ -395,6 +427,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+10].transform.position, gomokuTable[deleteStartNum+10].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+30].transform.position, gomokuTable[deleteStartNum+30].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+40].transform.position, gomokuTable[deleteStartNum+40].transform.rotation);
+                img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+10].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+20].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+30].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+40].GetComponent<Image>();
+                dolmove(img);
                 break;
 
                 case 3: //  ↙방향 제거
@@ -409,6 +451,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+8].transform.position, gomokuTable[deleteStartNum+8].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+24].transform.position, gomokuTable[deleteStartNum+24].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+32].transform.position, gomokuTable[deleteStartNum+32].transform.rotation);
+                img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+8].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+16].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+24].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+32].GetComponent<Image>();
+                dolmove(img);
                 break;   
             } 
             if(PhotonNetwork.IsMasterClient)
@@ -439,6 +491,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+1].transform.position, gomokuTable[deleteStartNum+1].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+3].transform.position, gomokuTable[deleteStartNum+3].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+4].transform.position, gomokuTable[deleteStartNum+4].transform.rotation);
+                var img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+1].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+2].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+3].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+4].GetComponent<Image>();
+                dolmove(img);
                 break;
 
                 case 1: //  ↓방향 제거
@@ -453,6 +515,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+9].transform.position, gomokuTable[deleteStartNum+9].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+27].transform.position, gomokuTable[deleteStartNum+27].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+36].transform.position, gomokuTable[deleteStartNum+36].transform.rotation);
+                img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+9].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+18].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+27].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+36].GetComponent<Image>();
+                dolmove(img);
                 break;
 
                 case 2: //  ↘방향 제거
@@ -467,6 +539,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+10].transform.position, gomokuTable[deleteStartNum+10].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+30].transform.position, gomokuTable[deleteStartNum+30].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+40].transform.position, gomokuTable[deleteStartNum+40].transform.rotation);
+                img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+10].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+20].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+30].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+40].GetComponent<Image>();
+                dolmove(img);
                 break;
 
                 case 3: //  ↙방향 제거
@@ -481,6 +563,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Instantiate(part2, gomokuTable[deleteStartNum+8].transform.position, gomokuTable[deleteStartNum+8].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+24].transform.position, gomokuTable[deleteStartNum+24].transform.rotation);
                 Instantiate(part2, gomokuTable[deleteStartNum+32].transform.position, gomokuTable[deleteStartNum+32].transform.rotation);
+                img=gomokuTable[deleteStartNum].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+8].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+16].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+24].GetComponent<Image>();
+                dolmove(img);
+                img=gomokuTable[deleteStartNum+32].GetComponent<Image>();
+                dolmove(img);
                 break;   
             }
             if(PhotonNetwork.IsMasterClient)
@@ -494,7 +586,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 PlayerManager.enemyPlayerManager.GetDamaged();
             } 
         }
-        repaintBoard();
+        
     }
 
     void enemyshoot() {
