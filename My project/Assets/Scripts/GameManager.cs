@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         resetGameData();
         unInteractableAllBTN();
         repaintBoard();
-        print(5);
     }
 
     
@@ -605,8 +604,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         leftdownDir,
         rightdownDir
     }
-
-    bool wasGomokued = false;
 
     int checkGomoku(int color)
     { 

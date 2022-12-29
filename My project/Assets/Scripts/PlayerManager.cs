@@ -14,12 +14,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         if(myPlayerManager == null)
         {
             myPlayerManager = this;
-            Debug.Log ("my");
         }
         else
         {
             enemyPlayerManager = this;
-            Debug.Log ("enemy");
             if(PhotonNetwork.IsMasterClient) GameManager.instance.coinToss();
         }
     }
@@ -184,7 +182,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
 
     [Header("Health Point")]
-    public int MyHP = 3; int maxHP = 3;
+    public int MyHP = 3;
     public GameObject hp1; public GameObject hp2; public GameObject hp3;
 
     public void GetDamaged()
