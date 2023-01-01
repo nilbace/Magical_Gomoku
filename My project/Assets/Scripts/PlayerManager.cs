@@ -109,12 +109,21 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     int handcount =0;
     void AddCard()
     {
-        var cardObject = Instantiate(cardPrefab,this.transform.position+new Vector3(30,20,0), Quaternion.identity);
-        var card = cardObject.GetComponent<Card>();
-        card.myHandIndex = handcount; handcount++;
-        myCardsGameObj.Add(cardObject);
-        card.Setup(PopItem(), PV.IsMine);
-        myCards.Add(card);
+        if(PV.IsMine) {
+            var cardObject = Instantiate(cardPrefab,this.transform.position+new Vector3(30,20,0), Quaternion.identity);
+            var card = cardObject.GetComponent<Card>();
+            card.myHandIndex = handcount; handcount++;
+            myCardsGameObj.Add(cardObject);
+            card.Setup(PopItem(), PV.IsMine);
+            myCards.Add(card);}
+        else {
+            var cardObject = Instantiate(cardPrefab,this.transform.position+new Vector3(30,-20,0), Quaternion.identity);
+            var card = cardObject.GetComponent<Card>();
+            card.myHandIndex = handcount; handcount++;
+            myCardsGameObj.Add(cardObject);
+            card.Setup(PopItem(), PV.IsMine);
+            myCards.Add(card);
+        }
 
         SetOriginOrder();
         CardAlignment();
