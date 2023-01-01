@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
@@ -108,7 +109,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     int handcount =0;
     void AddCard()
     {
-        var cardObject = Instantiate(cardPrefab, new Vector2(-20,-20), Quaternion.identity);
+        var cardObject = Instantiate(cardPrefab,this.transform.position+new Vector3(30,20,0), Quaternion.identity);
         var card = cardObject.GetComponent<Card>();
         card.myHandIndex = handcount; handcount++;
         myCardsGameObj.Add(cardObject);
@@ -147,16 +148,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         float gap = myCardsRight.x - myCardsLeft.x;
         if(myCards.Count==1)
         {
-            if(PV.IsMine)    myCards[0].transform.position = new  Vector3(1,-4.2f,0);
-            else myCards[0].transform.position = new Vector3(1, 4.2f, 0);
+            if(PV.IsMine)    myCards[0].transform.DOMove(new  Vector3(1,-4.2f,0),0.75f).SetEase(Ease.OutQuad);
+            else myCards[0].transform.DOMove(new  Vector3(1,4.2f,0),0.75f).SetEase(Ease.OutQuad);
         }
         else
         {
             float interval = gap/(myCards.Count - 1);
             for(int i = 0;i<myCards.Count; i++)
             {
-                myCards[i].transform.position = myCardsLeft + 
-                new Vector3(interval*i,0,0);
+                myCards[i].transform.DOMove(myCardsLeft + 
+                new Vector3(interval*i,0,0),0.75f).SetEase(Ease.OutQuad);
             }
         }
     }
