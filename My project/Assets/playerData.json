@@ -1,4 +1,7 @@
 {
     "name": "asdf",
-    "playeraHasPlayedTuitorial": false
+    "playeraHasPlayedTuitorial": false,
+    "mastervol": 0.5917229652404785,
+    "sfxvol": 0.3944818675518036,
+    "bgmvol": 0.6993085741996765
 }

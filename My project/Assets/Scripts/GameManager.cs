@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public ParticleSystem part2;
     public ParticleSystem myshooting;
     public ParticleSystem enemyshooting;
+    AudioSource audioSource;
 
     
     enum stoneColor{ black = 1, white = 2 }
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         resetGameData();
         unInteractableAllBTN();
         repaintBoard();
+        audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
     
@@ -116,6 +118,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC] void putStonewithoutMagic(int place, stoneColor color)
     {
         gomokuData[place] = (int)color;
+        audioSource.Play();
         reNewalBoard();
     }
     [PunRPC] void putBlackStone(int place)

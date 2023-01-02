@@ -21,13 +21,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             enemyPlayerManager = this;
             if(PhotonNetwork.IsMasterClient) GameManager.instance.coinToss();
         }
+        audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
     public List<CardData> cardDataBuffer;
     public cardDataSO cardDataSO;
     public GameObject cardPrefab;
     public PhotonView PV;
-
+    AudioSource audioSource;
     public List<Card> myCards;
     public List<GameObject> myCardsGameObj;
     public Vector3 myCardsLeft;
@@ -124,7 +125,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             card.Setup(PopItem(), PV.IsMine);
             myCards.Add(card);
         }
-
+        audioSource.Play();
         SetOriginOrder();
         CardAlignment();
     }

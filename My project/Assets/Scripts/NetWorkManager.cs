@@ -6,6 +6,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using System.IO;
 using System;
 
@@ -53,6 +54,10 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("Game")]
     public GameObject GamePannel;
     public GameObject pausePannel;
+    public AudioMixer audiomixer;
+    public Slider masterslid;
+    public Slider bgmslid;
+    public Slider sfxslid;
   
     void Update()
     {   
@@ -125,6 +130,9 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         status.color = Color.magenta; status.text = "연결중";
         closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;
         LoadPlayerDatafromJson();
+        masterslid.value=playerData.mastervol;
+        sfxslid.value=playerData.sfxvol;
+        bgmslid.value=playerData.bgmvol;
     }
 
     public override void OnConnectedToMaster()
@@ -310,6 +318,22 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     }
     public PlayerData playerData;
 
+    public void setmaster(float sliderval) {
+        audiomixer.SetFloat("Master", Mathf.Log10(sliderval)*20);
+        playerData.mastervol=sliderval;
+        SavePlayerDataToJson();
+    }
+
+    public void setbgm(float sliderval) {
+        audiomixer.SetFloat("BGM", Mathf.Log10(sliderval)*20);
+        playerData.bgmvol=sliderval;
+        SavePlayerDataToJson();
+    }
+    public void setsfx(float sliderval) {
+        audiomixer.SetFloat("SFX", Mathf.Log10(sliderval)*20);
+        playerData.sfxvol=sliderval;
+        SavePlayerDataToJson();
+    }
 
     [ContextMenu("To Json Data")]public void SavePlayerDataToJson()
     {
@@ -454,4 +478,7 @@ public class PlayerData
 {
     public string name;
     public bool playeraHasPlayedTuitorial = false;
+    public float mastervol;
+    public float sfxvol;
+    public float bgmvol;
 }
