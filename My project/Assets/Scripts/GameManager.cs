@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public ParticleSystem myshooting;
     public ParticleSystem enemyshooting;
     AudioSource audioSource;
+    AudioSource turnsfx;
 
     
     enum stoneColor{ black = 1, white = 2 }
@@ -39,7 +40,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         resetGameData();
         unInteractableAllBTN();
         repaintBoard();
-        audioSource = this.gameObject.GetComponent<AudioSource>();
+        turnsfx = this.gameObject.GetComponent<AudioSource>();
+        audioSource = gomokuTable[0].gameObject.GetComponent<AudioSource>();
     }
 
     
@@ -68,6 +70,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if(gomokuData[i]==0) gomokuTable[i].interactable=true;
         }
+        turnsfx.Play();
         NetWorkManager.instance.printScreenString("나의 턴");
     }
 
@@ -79,6 +82,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             gomokuTable[i].interactable=false;
         }
+        turnsfx.Play();
         PV.RPC("startMyTurn", RpcTarget.OthersBuffered);
     }
     #endregion

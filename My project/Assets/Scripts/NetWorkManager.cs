@@ -226,15 +226,16 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         if(num == -2) --currentPage;
         else if(num == -1) ++currentPage;
-        else PhotonNetwork.JoinRoom(myList[multiple+num].Name);
-        GameManager.instance.Start();
+        else {
+        PhotonNetwork.JoinRoom(myList[multiple+num].Name);
+        GameManager.instance.Start();}
         MyListRenewal();
     }
 
     public void MyListRenewal()
     {
-        previousPage.interactable = (currentPage == 2);
-        nextPage.interactable = (currentPage == 1);
+        previousPage.interactable = (currentPage >= 2);
+        nextPage.interactable = (currentPage <= 5);
 
         multiple = (currentPage-1)*5;
 
