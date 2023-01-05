@@ -13,6 +13,7 @@ public class Card : MonoBehaviourPunCallbacks
     public SpriteRenderer cardSprite;
     public bool isMine;
     public Sprite cardBack;
+    public Sprite cardFront;
 
     public CardData cardData;
     public int myHandIndex = -1;

@@ -139,6 +139,7 @@ MonoBehaviour:
   cardSprite: {fileID: 5364840912449116242}
   isMine: 1
   cardBack: {fileID: 656549765, guid: cf4dd1150d876e84da06cc66b66f6c48, type: 3}
+  cardFront: {fileID: 21300000, guid: af2222cfb83c49e429e18170b555f5b6, type: 3}
   cardData:
     name: 
     indexNum: 0

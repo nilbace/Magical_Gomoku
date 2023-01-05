@@ -69,6 +69,38 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     [PunRPC] void destroyCard(int index)
     {
+        if(!PV.IsMine){
+            StartCoroutine(cardflip(index));
+            StartCoroutine(delay(index));}
+        else {
+            Destroy(myCardsGameObj[index]);
+            myCardsGameObj.RemoveAt(index);
+            myCards.RemoveAt(index);
+            for(int i = 0;i<myCards.Count;i++)
+            {
+                myCards[i].myHandIndex = i;
+            }
+            CardAlignment();
+        }
+    }
+
+    IEnumerator cardflip(int num) {
+        Sequence seq=DOTween.Sequence();
+        GameObject card=enemyPlayerManager.myCardsGameObj[num];
+        Card cardscript=card.GetComponent<Card>();
+        seq.Join(card.transform.DOMove(card.transform.position-new Vector3(0,5,0),0.75f).SetEase(Ease.OutQuad));
+        seq.Join(cardscript.nameTMP.transform.DORotate(new Vector3(0,180,0),0.1f));
+        seq.Join(cardscript.effectTMP.transform.DORotate(new Vector3(0,180,0),0.1f));
+        seq.Append(card.transform.DORotate(new Vector3(0,180,0),0.5f));
+        yield return new WaitForSeconds(0.96f);
+        card.GetComponent<SpriteRenderer>().sprite=cardscript.cardFront;
+        cardscript.characterSprite.sprite = cardscript.cardData.sprite;
+        cardscript.nameTMP.text = cardscript.cardData.name;
+        cardscript.effectTMP.text = cardscript.cardData.cardEffectInfoText;
+    }
+
+    IEnumerator delay(int index) {
+        yield return new WaitForSeconds(3f);
         Destroy(myCardsGameObj[index]);
         myCardsGameObj.RemoveAt(index);
         myCards.RemoveAt(index);
