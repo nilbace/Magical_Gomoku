@@ -25,6 +25,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
 
     public List<CardData> cardDataBuffer;
+    int[] cardindex;
     public cardDataSO cardDataSO;
     public GameObject cardPrefab;
     public PhotonView PV;
@@ -35,7 +36,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Vector3 myCardsRight;
 
     private void Start() {
-        SetupItemBuffer();
+        if(PV.IsMine){ 
+            SetupItemBuffer();
+            cardindex=new int[cardDataBuffer.Count];
+            for(int i=0; i<cardDataBuffer.Count; i++) {
+                cardindex[i]=cardDataBuffer[i].indexNum;
+            }
+            PV.RPC("cardsyncro", RpcTarget.OthersBuffered, cardindex);
+            AddFiveCard();
+        }
+        
         transform.position = new Vector3(-2,-3.8f);
         if(PV.IsMine)
         {
@@ -50,8 +60,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             myCardsRight = new Vector3(2.24f,4.2f,0);
 
         }
+    }
 
-        AddFiveCard();
+    [PunRPC] void cardsyncro(int[] indexs) {
+        PlayerManager.enemyPlayerManager.cardDataBuffer=new List<CardData>(100);
+        for(int i=0; i<indexs.Length; i++) {
+            CardData item = PlayerManager.enemyPlayerManager.cardDataSO.items[indexs[i]];
+            PlayerManager.enemyPlayerManager.cardDataBuffer.Add(item);
+        }
+        PlayerManager.enemyPlayerManager.AddFiveCard();
     }
 
     private void Update() {

@@ -60,6 +60,7 @@ MonoBehaviour:
   - AreaBox_set9_1
   - EnemyWin
   - GameOver
+  - cardsyncro
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
