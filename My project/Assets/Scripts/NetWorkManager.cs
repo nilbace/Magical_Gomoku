@@ -10,6 +10,9 @@ using UnityEngine.Audio;
 using System.IO;
 using System;
 
+
+// 네트워크 매니저 및 UI 매니저
+
 public class NetWorkManager : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
@@ -17,7 +20,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public TextMeshProUGUI status; 
     
 
-    private void Awake() //싱글턴
+    private void Awake() // 싱글턴
     {
         if (instance == null) 
         {
@@ -32,28 +35,29 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     }
     
     [Header("Setting")]
-    public GameObject SettingPannel;
-    public TMP_InputField changenameInputfield;
-    
+    public GameObject SettingPannel;  // 설정패널
+    public TMP_InputField changenameInputfield;  // 설정패널 - 이름 입력 필드
+
     [Header("Start")]
-    public GameObject StartPannel;
-    public Button gotoSchoolBTN;
+    public GameObject StartPannel;  // 스타트화면
+    public Button gotoSchoolBTN;  // 스타트화면 - '마법학교로' 버튼
+
     [Header("GameEndPannel")]
-    public GameObject GameEndPannel;
+    public GameObject GameEndPannel;  // 게임종료패널
 
     [Header("Lobby")]
-    public GameObject LobbyPannel;
-    public TMP_InputField roomnameField;
-    public TextMeshProUGUI welcomeTMP;
-    public TextMeshProUGUI clientNumberTMP;
+    public GameObject LobbyPannel;  // 로비 패널
+    public TMP_InputField roomnameField;  // 로비 패널 - 방 이름 입력 필드
+    public TextMeshProUGUI welcomeTMP;  // 로비 패널 - 상단 '~님 환영합니다' 문자
+    public TextMeshProUGUI clientNumberTMP;  // 로비 패널 - 상단 'n Lobby / n Connected' 문자
     public Button[] PNrooms;
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, multiple = 5;
 
     [Header("Game")]
-    public GameObject GamePannel;
-    public GameObject pausePannel;
+    public GameObject GamePannel;  // 게임 패널
+    public GameObject pausePannel;  // 일시정지
     public AudioMixer audiomixer;
     public Slider masterslid;
     public Slider bgmslid;
@@ -61,21 +65,21 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
   
     void Update()
     {   
-        if(LobbyPannel.activeSelf)
+        if(LobbyPannel.activeSelf)  // 로비 패널이 열려있으면
         {
             clientNumberTMP.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
             "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
-            welcomeTMP.text = PhotonNetwork.LocalPlayer.NickName + "님 환영합니다";
+            welcomeTMP.text = PhotonNetwork.LocalPlayer.NickName + "님 환영합니다";  // 상단 문자열 설정
         }
 
-        if(GamePannel.activeSelf && PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount==2)
+        if (GamePannel.activeSelf && PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount == 2) 
         {
             status.text = "실습중";
         }
 
-        if (Application.platform == RuntimePlatform.Android) 
+        if (Application.platform == RuntimePlatform.Android)   // 플랫폼이 안드로이드이면
         {
-            if (Input.GetKey(KeyCode.Escape))  // 뒤로 가기 버튼
+            if (Input.GetKey(KeyCode.Escape))  // 뒤로 가기 버튼 처리
             {
                 HandlingBackButton(); 
             }
@@ -83,11 +87,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     }
 
     #region 세팅화면
-    public void closeSettingPannel()
+    public void closeSettingPannel()  // 일시정지로 돌아가지 않아도 되면 (스타트화면에서 환경설정을 연 경우)
     {
         if(returntoPause == false)
-        {closeAllPannel(); StartPannel.SetActive(true);}
-        else
+        {
+            closeAllPannel();
+            StartPannel.SetActive(true);  // 모든 패널을 닫고 스타트화면만 활성화함
+        }
+        else  // 일지정지로 돌아가야되면 (게임 중에 환경설정을 연 경우)
         {
             SettingPannel.SetActive(false);
             pausePannel.SetActive(true);
@@ -108,6 +115,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     }
 
+    // 플레이어의 이름을 변경하고 Json 데이터로 저장함
+    // 설정패널 -> 이름변경 버튼의 이벤트 함수
     public void changenameBTN()
     {
         playerData.name = changenameInputfield.text;
@@ -123,13 +132,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     
     void Start()
     {
-        //Screen.SetResolution(1080, 1920, false);
-        //Screen.SetResolution(540, 960, false);
-        setResolution();
+        setResolution();  // 해상도 설정
         PhotonNetwork.ConnectUsingSettings();
         status.color = Color.magenta; status.text = "연결중";
-        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;
-        LoadPlayerDatafromJson();
+        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;  // 스타트화면만 활성화함
+        LoadPlayerDatafromJson();  // json 파일로부터 플레이어 데이터를 가져옴
+
         masterslid.value=playerData.mastervol;
         sfxslid.value=playerData.sfxvol;
         bgmslid.value=playerData.bgmvol;
@@ -148,7 +156,9 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         status.color = Color.red;
         status.text = "연결실패 재접속해주세요";
     }
-    public void gotoMagicSchoolBTN() //마법학교로 버튼
+
+    // 스타트화면 -> 마법학교로 버튼의 이벤트 함수
+    public void gotoMagicSchoolBTN() // '마법학교로' 버튼
     { 
         if(PhotonNetwork.IsConnected)
         {
@@ -157,45 +167,52 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void QuitGameBTN() //나가기 버튼
+    // 스타트화면 -> '나가기' 버튼의 이벤트 함수
+    public void QuitGameBTN()  // 나가기 버튼
     {
         closeAllPannel();
-        GameEndPannel.SetActive(true);
+        GameEndPannel.SetActive(true);  // 게임 종료 패널을 활성화함
     }
 
+    // 스타트화면 -> '설정' 버튼의 이벤트 함수
     public void SettingBTN() //설정 버튼
     {
         closeAllPannel();
-        SettingPannel.SetActive(true);
+        SettingPannel.SetActive(true);  // 설정 패널을 활성화함
     }
 
-    public void productionStaffBTN() //제작진 버튼
+    // 스타트화면 -> '제작진' 버튼의 이벤트 함수
+    public void productionStaffBTN() 
     {
         printScreenString("미개발상태");
     }
 
     #endregion
-   
+
     #region 게임종료패널
+
+    // 게임종료패널 -> '예' 버튼의 이벤트 함수
     public void EndPannelYesBTN()
     {
-        Application.Quit();
+        Application.Quit();  // 프로그램 종료
     }
 
+    // 게임종료패널 -> '아니오' 버튼의 이벤트 함수
     public void EndPannelNoBTN()
     {
         closeAllPannel();
-        StartPannel.SetActive(true);
+        StartPannel.SetActive(true);  // 스타트화면 활성화
     }
 
     #endregion
-    
+
     #region 로비 화면
 
+    // 로비패널 -> '이전 화면' 버튼의 이벤트 함수
     public void toStartPannelBTN()
     {
         closeAllPannel();
-        StartPannel.SetActive(true);
+        StartPannel.SetActive(true);  // 스타트화면 활성화
     }
     public override void OnJoinedLobby()
     {
@@ -291,7 +308,9 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 잡다한 코드들
-    void closeAllPannel() //모두 닫기
+
+    // 기능 : 패널들을 모두 닫음
+    void closeAllPannel()
     {
         SettingPannel.SetActive(false);
         StartPannel.SetActive(false);
@@ -304,11 +323,13 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("택스트 경고")]
     public GameObject WarningText;
 
+    // 기능 : 화면에 텍스트를 출력함
     public void printScreenString(string str)
     {
         StartCoroutine(printString(str));
     }
 
+    // 기능 : 화면에 텍스트를 출력하고 1초 뒤 없앰
     IEnumerator printString(string str)
     {
         var textInfo = Instantiate(WarningText);
@@ -336,6 +357,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         SavePlayerDataToJson();
     }
 
+    // 기능 : 플레이어의 데이터를 json 파일에 저장함
+    // 참조 : NetWorkManager.changeNameBTN()
     [ContextMenu("To Json Data")]public void SavePlayerDataToJson()
     {
         string path;
@@ -351,6 +374,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         File.WriteAllText(path, jsonData);
     }
 
+    // 기능 : json 파일로부터 플레이어의 데이터를 가져옴
+    // 참조 : NetWorkManager.Start()
     public void LoadPlayerDatafromJson()
     {
         string path;
@@ -367,6 +392,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
     }
 
+    // 기능 : 해상도를 항상 1920*1080 (16:9)로 고정함
+    // 참조 : NetWorkManager.Start()
     public void setResolution()  // 해상도 16:9 고정
     {
         int setWidth = 1080; // 사용자 설정 너비
@@ -389,10 +416,11 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
         }
 
-        void OnPreCull() => GL.Clear(true, true, Color.black);
+        void OnPreCull() => GL.Clear(true, true, Color.black);  // 남는 여백을 모두 검정색으로 채움
     }
 
-    // pannel에 따라 뒤로 가기 버튼 처리 (게임 버튼에 붙어있는 이벤트 함수 호출)
+    // 기능 : pannel에 따라 뒤로 가기 버튼 처리 (게임 버튼에 붙어있는 이벤트 함수 호출)
+    // 참조 : NetWorkManager.Update()
     void HandlingBackButton()
     {
         if (SettingPannel.activeSelf == true)  // 설정 패널 열려있음
@@ -425,25 +453,30 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     #region 게임종료, 일시정지
 
+    // 게임 패널 -> 일시정지 버튼의 이벤트 함수
     public void PauseBTN()
     {
-        pausePannel.SetActive(true);
+        pausePannel.SetActive(true);  // 다른 패널들을 닫지 않고, 게임 패널이 활성화된 상태에서 일시정지 패널을 추가로 활성화함
     }
 
-    
+    // 일시정지 -> 'X' 버튼의 이벤트 함수
     public void ClosePausePannel()
     {
-        pausePannel.SetActive(false);
+        pausePannel.SetActive(false);  // 일시정지 패널을 비활성화함
     }
 
+    // 일시정지 -> '환경설정' 버튼의 이벤트 함수
     public void PauseToSetting()
     {
         pausePannel.SetActive(false);
         SettingPannel.SetActive(true);
-        returntoPause = true;
+        returntoPause = true;  // 일시정지 패널로 돌아오게 설정함
     }
-    bool returntoPause = false;
 
+    bool returntoPause = false;  // 일시정지 화면으로 돌아가야하는지 여부
+
+    // 기능 : 항복
+    // 일시정지 -> '항복하기' 버튼의 이벤트 함수
     public void Surrender()
     {
         pausePannel.SetActive(false);
@@ -466,10 +499,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         PlayerManager.enemyPlayerManager.drawready=true;
     }
 
+    // 기능 : 
+    // 참조 : GameManager.BackToLobby()
     public void EndGame()
     {
         closeAllPannel();
-        LobbyPannel.SetActive(true);
+        LobbyPannel.SetActive(true);  // 모든 패널을 끄고 로비 패널만 활성화함
         PhotonNetwork.LeaveRoom();
         StartCoroutine(afterEndGame());
     }
@@ -490,12 +525,21 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #endregion
 }
 
+// 플레이어의 정보
 [System.Serializable]
 public class PlayerData
 {
-    public string name;
-    public bool playeraHasPlayedTuitorial = false;
+    public string name;  // 이름 (닉네임)
+    public bool playeraHasPlayedTuitorial = false;  // 튜토리얼을 봤는지 여부
     public float mastervol;
     public float sfxvol;
     public float bgmvol;
 }
+
+/*
+ * 환경 설정을 열 수 있는 경우가 2가지 존재
+    (1) 스타트 화면에서
+    (2) 게임 중에 (일시정지버튼을 누르고 난 뒤)
+ * 
+ * 
+ */ 
