@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+//using UnityEditor.TextCore.Text;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -104,7 +105,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region 오목관련+카드
     enum MyHandStatus{
         cannotUseCard = -1,  // 카드를 쓰면 안되는 상태 (상대턴이거나 혹은 내 턴인데 이미 카드를 쓴 경우)
-        reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone3_3} // 카드 종류
+        reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone3_3, allRandomRelocate, deleteCross  // 카드 종류
+    }
 
     // 기능 : 현재 사용하려고 하는 카드의 종류를 지정해줌
     // 매개변수 : index (사용하려고 하는 카드의 인덱스 번호)
@@ -176,7 +178,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     int selectedBTNindex = -1;  // 영역을 선택했을 때, 기준이 되는 버튼의 번호
     bool putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
     public GameObject bluebox3_3;  // 영역 선택 박스
+    public GameObject areaboxPlus;  // 영역 선택 박스 2 (보조)
 
+    // 구현 완료된 카드 : 1, 2, 3, 4, 5, 8, 9
+    // 미구현 : 6, 7, 10
 
     // 기능 : 카드 구현 (카드 사용)
     // 매개변수 : i (돌의 x 좌표), j (돌의 y 좌표)
@@ -187,7 +192,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             // 3*3 지정 구역 내의 돌을 랜덤 위치 재배치하는 카드 (3) : index 0
             case MyHandStatus.reassignment3_3:
-            {
                 if(i==0 || i ==8 || j ==0 || j == 8)
                 {
                     NetWorkManager.instance.printScreenString("다시 선택하세요");
@@ -196,15 +200,15 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else
                 {
                     if(!areaSelected || (areaSelected&& selectedBTNindex!=(i+j*9))) // 아직 영역을 선택하지 않았거나. 이전과 다른 버튼을 클릭한 경우
-                        {
+                    {
                         PV.RPC("AreaBox_set3_3", RpcTarget.AllBuffered);   // 영역 선택 박스를 바둑판 3*3 크기의 정사각형으로 바꿈
                         PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f+0.55f*i, 2.21f-0.55f*j, 0));  // 영역 박스를 지금 선택한 버튼의 위치로 변경함
                         areaSelected = true;
                         selectedBTNindex = i+j*9;
                         NetWorkManager.instance.printScreenString("선택됨");
                     }
-                        else  // 영역을 선택한 상태에서 같은 버튼을 다시 누른 경우 → 카드 발동
-                        {   
+                    else  // 영역을 선택한 상태에서 같은 버튼을 다시 누른 경우 → 카드 발동
+                    {   
                         PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));  // 영역 박스를 안보이는 위치로 치움
                             unInteractableAllBTN();
                         areaSelected = false; selectedBTNindex = -1; 
@@ -212,37 +216,38 @@ public class GameManager : MonoBehaviourPunCallbacks
                         
                         // 랜덤 재배치 시작
                         int temp;
-                        for(int i2 = i-1; i2<=i+1; i2++) // 재배치 완료
+                        for (int i2 = i - 1; i2 <= i + 1; i2++)   // 3*3 영역의 모든 돌들을 랜덤하게 재배치
                         {
                             for(int j2 = j-1; j2 <= j + 1; j2++)
                             {
-                                int rand = i + Random.Range(-1,2) + (j+Random.Range(-1,2))*9;
-                                int place = i2+j2*9;
+                                int rand = i + Random.Range(-1, 2) + (j + Random.Range(-1, 2)) * 9;
+                                int place = i2 + j2 * 9;
+
+                                // Swap
                                 temp = gomokuData[place];
                                 gomokuData[place] = gomokuData[rand];
                                 gomokuData[rand] = temp;
                             }
                         }
-                        
-                        for(int i2 = i-1; i2<=i+1; i2++) // 재배치 완료
+
+                        for (int i2 = i - 1; i2 <= i + 1; i2++)   // 랜덤하게 재배치한 데이터를 두 플레이어가 동기화함
                         {
                             for(int j2 = j-1; j2 <= j + 1; j2++)
                             {
-                                int place = i2+j2*9;
+                                int place = i2 + j2 * 9;
                                 int tempdata = gomokuData[place];
                                 PV.RPC("ChangeData", RpcTarget.AllBuffered, place, tempdata);
                             }
                         }
-                        PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                        PV.RPC("reNewalBoard", RpcTarget.AllBuffered);  // 오목판을 새로 그림
                         endMyTurn();  // 턴을 끝냄
-                        }
+                    }
                 }
-            }
-			break;
+            
+			    break;
 
             // 한 줄 삭제하는 카드 - 세로줄 삭제 (4) : index 1
             case MyHandStatus.deleteVertical:
-            {
                 if(!areaSelected || (areaSelected&&(selectedBTNindex%9)!=(i)))  // 아직 영역을 선택하지 않았거나, 이전과 다른 영역을 선택한 경우
                     {
                         PV.RPC("AreaBox_set1_9", RpcTarget.AllBuffered);   // 박스의 모양을 바둑판 1*9 크기의 직사각형으로 변경 (세로)
@@ -251,23 +256,23 @@ public class GameManager : MonoBehaviourPunCallbacks
                         selectedBTNindex = i+j*9;
                         NetWorkManager.instance.printScreenString("선택됨");
                     }
-                    else  // 영역을 선택한 상태에서 같은 영역을 다시 누른 경우
-                    {   
-                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));  // 박스를 보이지 않는 곳으로 치움
-                        unInteractableAllBTN();
-                        areaSelected = false; selectedBTNindex = -1; 
-                        myHandStatus = MyHandStatus.cannotUseCard;  // 초기화
-                        // 한 줄 삭제 시작
-                        for (int i2 = 0; i2<9; i2++)
-                        {
-                            int place = i+i2*9;
-                            PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 0);
-                        }
-                        PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
-                        endMyTurn();  // 턴을 끝냄
+                else  // 영역을 선택한 상태에서 같은 영역을 다시 누른 경우
+                {   
+                    PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));  // 박스를 보이지 않는 곳으로 치움
+                    unInteractableAllBTN();
+                    areaSelected = false; selectedBTNindex = -1; 
+                    myHandStatus = MyHandStatus.cannotUseCard;  // 초기화
+                    // 한 줄 삭제 시작
+                    for (int i2 = 0; i2<9; i2++)
+                    {
+                        int place = i+i2*9;
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 0);
                     }
-            }
-			break;
+                    PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                    endMyTurn();  // 턴을 끝냄
+                }
+            
+			    break;
 
             // 한 번에 돌 2번 놓는 카드 (8) : index 2
             case MyHandStatus.putStoneTwice:
@@ -364,6 +369,85 @@ public class GameManager : MonoBehaviourPunCallbacks
                 } 
             }
             break;
+
+            // 오목판 위의 돌을 모두 랜덤 재배치하는 카드 (5) : index 5
+            case MyHandStatus.allRandomRelocate:
+                myHandStatus = MyHandStatus.cannotUseCard;
+
+                // 랜덤 재배치 시작
+                for (int i2 = 0; i2 < 9; i2++)  // 모든 돌들을 랜덤하게 재배치
+                {
+                    for (int j2 = 0; j2 < 9; j2++)
+                    {
+                        int rand = Random.Range(0, 81);
+                        int place = i2 + j2 * 9;
+
+                        // Swap
+                        int temp = gomokuData[place];
+                        gomokuData[place] = gomokuData[rand];
+                        gomokuData[rand] = temp;
+
+                    }
+                }
+
+                for (int i2 = 0; i2 < 9; i2++)  // 랜덤하게 재배치한 데이터 동기화
+                {
+                    for (int j2 = 0; j2 < 9; j2++)
+                    {
+                        int place = i2 + j2 * 9;
+                        int tempdata = gomokuData[place];
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, place, tempdata);
+                    }
+                }
+
+                PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                endMyTurn();
+
+                break;
+
+            // 십자가 줄 상의 모든 돌을 삭제하는 카드 (9) : index 6
+            case MyHandStatus.deleteCross:
+                if (!areaSelected || (areaSelected && selectedBTNindex != (i + j * 9)))  // 아직 영역을 선택하지 않았거나. 이전과 다른 버튼을 클릭한 경우
+                {
+                    // 박스 조정
+                    PV.RPC("AreaBox_set1_9", RpcTarget.AllBuffered);   // 박스의 모양을 바둑판 1*9 크기의 직사각형으로 변경 (세로)
+                    PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 0, 0));  // 박스 위치 변경
+
+                    // 보조 박스 조정
+                    PV.RPC("AreaBoxPlus_set9_1", RpcTarget.AllBuffered);  // 보조 박스의 모양을 바둑판 9*1 크기의 직사각형으로 변경 (가로)
+                    PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(0, 2.21f - 0.55f * j, 0));  // 보조 박스 위치 변경
+
+                    areaSelected = true;
+                    selectedBTNindex = i + j * 9;
+                    NetWorkManager.instance.printScreenString("선택됨");
+                }
+                else  // 영역을 선택한 상태에서 같은 영역을 다시 누른 경우
+                {
+                    PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));  // 박스를 보이지 않는 곳으로 치움
+                    PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(12, 10, 0));  // 보조 박스를 보이지 않는 곳으로 치움
+
+                    unInteractableAllBTN();
+                    areaSelected = false; selectedBTNindex = -1;
+                    myHandStatus = MyHandStatus.cannotUseCard;  // 초기화
+
+                    // 세로 한 줄 삭제 시작
+                    for (int i2 = 0; i2 < 9; i2++)
+                    {
+                        int place = i + i2 * 9;
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 0);
+                    }
+                    // 가로 한 줄 삭제 시작
+                    for (int i2 = 0; i2 < 9; i2++)
+                    {
+                        int place = i2 + j * 9;
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 0);
+                    }
+
+                    PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                    endMyTurn();  // 턴을 끝냄
+                }
+
+                break;
         }	
     }
 
@@ -853,6 +937,49 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC] void AreaBox_set1_9(){
         AreaBox.instance.setSize1_9();
     }
+
+    // 기능 : 영역 박스의 모양을 바둑판 2*2 크기의 정사각형으로 바꿈
+    // 참조 : GameManager.useMagicCard()
+    [PunRPC] void AreaBox_set2_2()
+    {
+        AreaBox.instance.setSize2_2();
+    }
+
+    // 기능 : 보조 영역 박스의 위치를 변경함
+    // 매개변수 : newposition (보조 영역 박스가 존재해야할 새로운 위치)
+    // 참조 : GameManager.useMagicCard()
+    [PunRPC] void moveAreaBoxPlus(Vector3 newposition)
+    {
+        areaboxPlus.transform.position = newposition;
+    }
+
+    // 기능 : 보조 영역 박스의 모양을 바둑판 9*1 크기의 직사각형으로 바꿈 (가로)
+    // 참조 : GameManager.useMagicCard()
+    [PunRPC] void AreaBoxPlus_set9_1()
+    {
+        Color color = areaboxPlus.GetComponent<SpriteRenderer>().color;
+        //color = Color.blue;
+        //color.a = 0.5f;
+        ColorUtility.TryParseHtmlString("#1230B984", out color);
+        areaboxPlus.GetComponent<SpriteRenderer>().color = color;
+
+        AreaBoxPlus.instance.setSize9_1();
+    }
+
+    // 기능 : 보조 영역 박스의 모양을 바둑판 2*2 크기의 정사각형으로 바꿈
+    // 참조 : GameManager.useMagicCard()
+    [PunRPC] void AreaBoxPlus_set2_2()
+    {
+        Color color = areaboxPlus.GetComponent<SpriteRenderer>().color;
+        color = Color.red;
+        areaboxPlus.GetComponent<SpriteRenderer>().color = color;
+
+        AreaBoxPlus.instance.setSize2_2(); 
+    }
+
+
+
+
 
     // 참조 : Card.OnMouseUp()
     public void setChangeEnemyStone(){

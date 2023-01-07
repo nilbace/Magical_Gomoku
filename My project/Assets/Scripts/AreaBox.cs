@@ -29,4 +29,11 @@ public class AreaBox : MonoBehaviour
         transform.localScale = new Vector3(0.59f, 5.05f, 1);
     }
 
+    // 기능 : 박스의 모양을 바둑판 2*2 크기의 정사각형으로 바꿈
+    // 참조 : GameManager.Areabox_set2_2()
+    public void setSize2_2()
+    {
+        transform.localScale = new Vector3(1.07f, 1.07f, 1.07f);
+    }
+
 }

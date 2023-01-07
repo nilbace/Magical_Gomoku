@@ -62,6 +62,11 @@ MonoBehaviour:
   - GameOver
   - cardsyncro
   - drawsyncro
+  - AreaBox_set2_2
+  - moveAreaBoxPlus
+  - AreaBoxPlus_set1_9
+  - AreaBoxPlus_set2_2
+  - AreaBoxPlus_set9_1
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

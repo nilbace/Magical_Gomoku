@@ -483,9 +483,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         GameManager.instance.LoseGame();
     }
 
-    public void draw() {
-        
-        
+    public void draw() 
+    {
         PlayerManager.myPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.myPlayerManager.drawimg;
         PlayerManager.myPlayerManager.drawready=true;
         PV.RPC("drawsyncro", RpcTarget.OthersBuffered);
