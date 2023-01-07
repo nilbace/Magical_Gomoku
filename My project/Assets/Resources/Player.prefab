@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 417834676260494474}
   - component: {fileID: 6086542188197578385}
   - component: {fileID: -1582875159633932535}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,6 +330,9 @@ MonoBehaviour:
   myCardsGameObj: []
   myCardsLeft: {x: 0, y: 0, z: 0}
   myCardsRight: {x: 0, y: 0, z: 0}
+  drawready: 0
+  drawimg: {fileID: 21300000, guid: b5554dffb032b1c4fb99226d8a510d47, type: 3}
+  character_img: {fileID: 6086542188442052541}
   MyHP: 3
   hp1: {fileID: 3746915193662516254}
   hp2: {fileID: 4974458439405721167}

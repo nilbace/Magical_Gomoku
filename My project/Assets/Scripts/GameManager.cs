@@ -684,6 +684,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         PV.RPC("GameOver", RpcTarget.OthersBuffered, "승리");
     }
 
+    public void draw() {
+        PV.RPC("GameOver", RpcTarget.AllBuffered, "무승부");
+    }
+
     [PunRPC]public void GameOver(string result = "패배")
     {
         ResultTMP.text = result;

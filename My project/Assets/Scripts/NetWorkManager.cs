@@ -450,6 +450,22 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         GameManager.instance.LoseGame();
     }
 
+    public void draw() {
+        
+        
+        PlayerManager.myPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.myPlayerManager.drawimg;
+        PlayerManager.myPlayerManager.drawready=true;
+        PV.RPC("drawsyncro", RpcTarget.OthersBuffered);
+        if(PlayerManager.myPlayerManager.drawready==true && PlayerManager.enemyPlayerManager.drawready==true) GameManager.instance.draw();
+        
+        
+    }
+
+    [PunRPC] void drawsyncro() {
+        PlayerManager.enemyPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.enemyPlayerManager.drawimg;
+        PlayerManager.enemyPlayerManager.drawready=true;
+    }
+
     public void EndGame()
     {
         closeAllPannel();

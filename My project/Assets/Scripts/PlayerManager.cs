@@ -35,6 +35,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Vector3 myCardsLeft;
     public Vector3 myCardsRight;
 
+    public bool drawready=false;
+    public Sprite drawimg;
+    public GameObject character_img;
+
     private void Start() {
         if(PV.IsMine){ 
             SetupItemBuffer();
