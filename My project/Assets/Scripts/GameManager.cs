@@ -105,8 +105,23 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region 오목관련+카드
     enum MyHandStatus{
         cannotUseCard = -1,  // 카드를 쓰면 안되는 상태 (상대턴이거나 혹은 내 턴인데 이미 카드를 쓴 경우)
-        reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone3_3, allRandomRelocate, deleteCross  // 카드 종류
+        reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone2_2, allRandomRelocate, deleteCross, stoneExchange, exchangeArea2_2  // 카드 종류
     }
+
+
+    /* 
+     * reassignment3_3 : 3*3 지정 구역 내의 돌을 랜덤 위치 재배치하는 카드 (3) : index 0
+     * deleteVertical : 한 줄 삭제하는 카드 (4) : index 1
+     * putStoneTwice : 한 번에 둘 2번 놓는 카드 (8) : index 2
+     * changeEnemyStone : 상대의 돌 1개를 내 돌로 바꾸는 카드 (1) : index 3
+     * reverseStone2_2 : 원하는 2*2 영역에서 흰돌은 검은돌로, 검은돌은 흰돌로 바꾸는 카드 (2) : index 4
+     * allRondomRelocate : 오목판 위의 돌을 모두 랜덤 재배치하는 카드 (5) : index 5
+     * deleteCross : 십자가 줄 상의 모든 돌을 삭제하는 카드 (9) : index 6
+     * stoneExchange : 상대의 돌 1개와 내 돌 1개 위치 변환하는 카드 (6) : index 7
+     * exchangeArea2_2 : 원하는 2*2 영역의 돌들을 다른 2*2 영역의 돌들과 교체하는 카드 (7) : index 8
+     */
+
+
 
     // 기능 : 현재 사용하려고 하는 카드의 종류를 지정해줌
     // 매개변수 : index (사용하려고 하는 카드의 인덱스 번호)
@@ -176,12 +191,15 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     bool areaSelected = false;  // 영역을 선택했는지 여부
     int selectedBTNindex = -1;  // 영역을 선택했을 때, 기준이 되는 버튼의 번호
+    bool subAreaSelected = false;  // 보조 영역을 선택했는지 여부
+    int subSelectedBTNindex = -1;  // 보조 영역을 선택했을 때, 기준이 되는 버튼의 번호
+    bool isConfirmed = false;  // 메인 영역이 확정됐는지 여부
     bool putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
     public GameObject bluebox3_3;  // 영역 선택 박스
     public GameObject areaboxPlus;  // 영역 선택 박스 2 (보조)
 
-    // 구현 완료된 카드 : 1, 2, 3, 4, 5, 8, 9
-    // 미구현 : 6, 7, 10
+    // 구현 완료된 카드 : 1, 2, 3, 4, 5, 6, 7, 8, 9
+    // 미구현 :  10
 
     // 기능 : 카드 구현 (카드 사용)
     // 매개변수 : i (돌의 x 좌표), j (돌의 y 좌표)
@@ -330,45 +348,50 @@ public class GameManager : MonoBehaviourPunCallbacks
 
             // 2*2로 바꿔야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------------------------------------------------
             // 원하는 2*2 영역에서 흰돌은 검은돌로, 검은돌은 흰돌로 바꾸는 카드 (2) : index 4
-            case MyHandStatus.reverseStone3_3:
-            {
-               if(i==0 || i ==8 || j ==0 || j == 8)
+            case MyHandStatus.reverseStone2_2:
+               if(i ==8 || j == 8)
                 {
                     NetWorkManager.instance.printScreenString("다시 선택하세요");
-                    return;
                 }
                 else
                 {
-                    if(!areaSelected || (areaSelected&& selectedBTNindex!=(i+j*9)))  // 영역을 아직 선택하지 않았거나, 이전과 다른 버튼을 클릭한 경우
-                        {
-                        PV.RPC("AreaBox_set3_3", RpcTarget.AllBuffered); 
-                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f+0.55f*i, 2.21f-0.55f*j, 0));
+                    if (!areaSelected || (areaSelected && selectedBTNindex != (i + j * 9)))   // 영역을 아직 선택하지 않았거나, 이전과 다른 버튼을 클릭한 경우
+                    {
+                        PV.RPC("AreaBox_set2_2", RpcTarget.AllBuffered);
+                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i + 0.3f, 2.21f - 0.55f * j - 0.3f, 0));
                         areaSelected = true;
                         selectedBTNindex = i+j*9;
                         NetWorkManager.instance.printScreenString("선택됨");
                     }
-                        else  // 영역을 선택한 상태에서 같은 버튼을 다시 누른 경우 - 카드 발동
-                        {   
+                    else  // 영역을 선택한 상태에서 같은 버튼을 다시 누른 경우 - 카드 발동
+                    {   
                         PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));
                         unInteractableAllBTN();
-                        areaSelected = false; selectedBTNindex = -1; 
-                        myHandStatus = MyHandStatus.cannotUseCard;  //초기화
-                        //시작
-                        for(int i2 = i-1; i2<=i+1; i2++) //재배치완료
+
+                        // 초기화
+                        areaSelected = false; 
+                        selectedBTNindex = -1; 
+                        myHandStatus = MyHandStatus.cannotUseCard;
+
+                        // 재배치 시작
+                        for(int i2 = i; i2<=i+1; i2++)
                         {
-                            for(int j2 = j-1; j2 <= j + 1; j2++)
+                            for(int j2 = j; j2 <= j + 1; j2++)
                             {
-                                int place = i2+j2*9;
-                                if(gomokuData[place]==1) PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 2);  // 검은돌을 흰돌로 바꿈
-                                    else if(gomokuData[place]==2) PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 1);  // 흰돌을 검은돌로 바꿈
-                                }
+                                int place = i2 + j2 * 9;
+
+                                if(gomokuData[place]==1) 
+                                    PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 2);  // 검은돌을 흰돌로 바꿈
+                                else if(gomokuData[place]==2) 
+                                    PV.RPC("ChangeData", RpcTarget.AllBuffered, place, 1);  // 흰돌을 검은돌로 바꿈
+                            }
                         }
                         PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
                         endMyTurn();  // 턴을 끝냄
-                        }
+                    }
                 } 
-            }
-            break;
+
+                break;
 
             // 오목판 위의 돌을 모두 랜덤 재배치하는 카드 (5) : index 5
             case MyHandStatus.allRandomRelocate:
@@ -445,6 +468,308 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                     PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
                     endMyTurn();  // 턴을 끝냄
+                }
+
+                break;
+
+
+            // 상대의 돌 1개와 내 돌 1개 위치 변환하는 카드 (6) : index 7
+            case MyHandStatus.stoneExchange:
+                if (!areaSelected && !subAreaSelected && !isConfirmed)  // 2개의 영역 모두 선택되지 않았고 영역 확정도 안된 경우 (카드 발동 직후)
+                {
+                    if (PhotonNetwork.IsMasterClient)  // 가장 먼저, 자기 돌만 선택할 수 있도록 함
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.black)
+                        {
+                            areaSelected = true;
+                            selectedBTNindex = BTNindex;
+
+                            PV.RPC("AreaBox_set1_1", RpcTarget.AllBuffered);
+                            PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                        else
+                            NetWorkManager.instance.printScreenString("다시 선택하세요 (검은 돌만 선택 가능함)");
+                    }
+                    else
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.white)
+                        {
+                            areaSelected = true;
+                            selectedBTNindex = BTNindex;
+
+                            PV.RPC("AreaBox_set1_1", RpcTarget.AllBuffered);
+                            PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                        else
+                            NetWorkManager.instance.printScreenString("다시 선택하세요 (흰 돌만 선택 가능함)");
+                    }
+                }
+
+                else if (areaSelected && !subAreaSelected && !isConfirmed && selectedBTNindex != (i + j * 9))  // 영역이 선택됐는데, 다른 부분을 클릭한 경우
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.black)
+                        {
+                            selectedBTNindex = BTNindex;
+
+                            PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                    else
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.white)
+                        {
+                            selectedBTNindex = BTNindex;
+
+                            PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                }
+
+                else if (areaSelected && !subAreaSelected && !isConfirmed && selectedBTNindex == (i + j * 9))  // 같은 영역을 2번 클릭한 경우
+                {
+                    isConfirmed = true;
+                    NetWorkManager.instance.printScreenString("확정됨");
+                }
+
+                else if (areaSelected && !subAreaSelected && isConfirmed)  // 내 돌 선택까지 완료된 경우. 2번째 영역 선택
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.white)  // 상대방의 돌만 선택할 수 있게
+                        {
+                            subAreaSelected = true;
+                            subSelectedBTNindex = BTNindex;
+
+                            PV.RPC("AreaBoxPlus_set1_1", RpcTarget.AllBuffered);
+                            PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                    else
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.black)
+                        {
+                            subAreaSelected = true;
+                            subSelectedBTNindex = BTNindex;
+
+                            PV.RPC("AreaBoxPlus_set1_1", RpcTarget.AllBuffered);
+                            PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                }
+
+                else if (areaSelected && subAreaSelected && isConfirmed && subSelectedBTNindex != (i + j * 9))  // 2번째 영역을 선택한 뒤, 다른 영역을 선택한 경우
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.white)
+                        {
+                            subSelectedBTNindex = BTNindex;
+
+                            PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                    else
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if (gomokuData[BTNindex] == (int)stoneColor.black)
+                        {
+                            subSelectedBTNindex = BTNindex;
+
+                            PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                }
+
+                else if (areaSelected && subAreaSelected && isConfirmed && subSelectedBTNindex == (i + j * 9))  // 2번째 영역까지 모두 선택 완료
+                {
+                    // 두 박스를 모두 보이지 않는 곳으로 치움
+                    PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));
+                    PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(12, 10, 0));
+                    unInteractableAllBTN();
+
+                    // 2개 돌 데이터 변경 (Swap)
+                    int temp = gomokuData[selectedBTNindex];
+                    gomokuData[selectedBTNindex] = gomokuData[subSelectedBTNindex];
+                    gomokuData[subSelectedBTNindex] = temp;
+
+                    // 데이터 변경 동기화
+                    PV.RPC("ChangeData", RpcTarget.AllBuffered, selectedBTNindex, gomokuData[selectedBTNindex]);
+                    PV.RPC("ChangeData", RpcTarget.AllBuffered, subSelectedBTNindex, gomokuData[subSelectedBTNindex]);
+
+                    // 변수값 초기화
+                    areaSelected = false;
+                    subAreaSelected = false;
+                    selectedBTNindex = -1;
+                    subSelectedBTNindex = -1;
+                    isConfirmed = false;
+                    myHandStatus = MyHandStatus.cannotUseCard;
+
+                    // 오목판 다시 그림
+                    PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                    endMyTurn();  // 턴을 끝냄
+
+                }
+
+                break;
+
+
+            // 원하는 2*2 영역의 돌들을 다른 2*2 영역의 돌들과 교체하는 카드 (7) : index 8
+            case MyHandStatus.exchangeArea2_2:
+                if (i == 8 || j == 8)
+                {
+                    NetWorkManager.instance.printScreenString("다시 선택하세요");
+                }
+                else
+                {
+                    if (!areaSelected && !subAreaSelected && !isConfirmed)  // 카드 발동 후 맨 처음 클릭
+                    {
+                        areaSelected = true;
+                        selectedBTNindex = i + j * 9;
+
+                        PV.RPC("AreaBox_set2_2", RpcTarget.AllBuffered);
+                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i + 0.3f, 2.21f - 0.55f * j - 0.3f, 0));
+
+                        NetWorkManager.instance.printScreenString("선택됨");
+                    }
+                    else if (areaSelected && !subAreaSelected && !isConfirmed && selectedBTNindex != (i + j * 9))  // 영역 선택 후 다른 부분을 클릭했을 때
+                    {
+                        selectedBTNindex = i + j * 9;
+
+                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i + 0.3f, 2.21f - 0.55f * j - 0.3f, 0));
+
+                        NetWorkManager.instance.printScreenString("선택됨");
+                    }
+                    else if (areaSelected && !subAreaSelected && !isConfirmed && selectedBTNindex == (i + j * 9))  // 영역 선택 후 같은 버튼 클릭 -> 확정
+                    {
+                        isConfirmed = true;
+
+                        NetWorkManager.instance.printScreenString("확정됨");
+                    }
+                    else if (areaSelected && !subAreaSelected && isConfirmed)  // 영역 확정 후 서브 영역 선택
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if ((BTNindex >= selectedBTNindex - 10 && BTNindex <= selectedBTNindex - 8) ||
+                            (BTNindex >= selectedBTNindex - 1 && BTNindex <= selectedBTNindex + 1) || (BTNindex >= selectedBTNindex + 8 && BTNindex <= selectedBTNindex + 10))   // 겹치는 영역을 선택한 경우
+                        {
+                            NetWorkManager.instance.printScreenString("겹치는 영역을 선택할 수 없습니다");
+                        }
+                        else
+                        {
+                            subAreaSelected = true;
+                            subSelectedBTNindex = BTNindex;
+
+                            PV.RPC("AreaBoxPlus_set2_2", RpcTarget.AllBuffered);
+                            PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i + 0.3f, 2.21f - 0.55f * j - 0.3f, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                    else if (areaSelected && subAreaSelected && isConfirmed && subSelectedBTNindex != (i + j * 9))  // 서브 영역 선택 시 이전과 다른 버튼을 클릭한 경우
+                    {
+                        int BTNindex = i + j * 9;
+
+                        if ((BTNindex >= selectedBTNindex - 10 && BTNindex <= selectedBTNindex - 8) ||
+                            (BTNindex >= selectedBTNindex - 1 && BTNindex <= selectedBTNindex + 1) || (BTNindex >= selectedBTNindex + 8 && BTNindex <= selectedBTNindex + 10))   // 겹치는 영역을 선택한 경우
+                        {
+                            NetWorkManager.instance.printScreenString("겹치는 영역을 선택할 수 없습니다");
+                            // 영역이 겹치면 돌이 중복될 수 있으므로 아예 겹치면 안됨
+                        }
+                        else
+                        {
+                            subSelectedBTNindex = BTNindex;
+
+                            PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i + 0.3f, 2.21f - 0.55f * j - 0.3f, 0));
+
+                            NetWorkManager.instance.printScreenString("선택됨");
+                        }
+                    }
+                    else if (areaSelected && subAreaSelected && isConfirmed && subSelectedBTNindex == (i + j * 9))  // 서브 영역 선택 후 같은 버튼 클릭 -> 확정
+                    {
+                        // 두 박스를 모두 보이지 않는 곳으로 치움
+                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));
+                        PV.RPC("moveAreaBoxPlus", RpcTarget.AllBuffered, new Vector3(12, 10, 0));
+                        unInteractableAllBTN();
+
+                        // 영역 데이터 변경 (Swap)
+                        int temp;
+
+                        // 각 영역 좌측 상단 데이터 변경
+                        temp = gomokuData[selectedBTNindex];
+                        gomokuData[selectedBTNindex] = gomokuData[subSelectedBTNindex];
+                        gomokuData[subSelectedBTNindex] = temp;
+
+                        // 각 영역 우측 상단 데이터 변경
+                        temp = gomokuData[selectedBTNindex + 1];
+                        gomokuData[selectedBTNindex + 1] = gomokuData[subSelectedBTNindex + 1];
+                        gomokuData[subSelectedBTNindex + 1] = temp;
+
+                        // 각 영역 좌측 하단 데이터 변경
+                        temp = gomokuData[selectedBTNindex + 9];
+                        gomokuData[selectedBTNindex + 9] = gomokuData[subSelectedBTNindex + 9];
+                        gomokuData[subSelectedBTNindex + 9] = temp;
+
+                        // 각 영역 우측 하단 데이터 변경
+                        temp = gomokuData[selectedBTNindex + 10];
+                        gomokuData[selectedBTNindex + 10] = gomokuData[subSelectedBTNindex + 10];
+                        gomokuData[subSelectedBTNindex + 10] = temp;
+
+                        // 데이터 변경 동기화
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, selectedBTNindex, gomokuData[selectedBTNindex]);
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, selectedBTNindex + 1, gomokuData[selectedBTNindex + 1]);
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, selectedBTNindex + 9, gomokuData[selectedBTNindex + 9]);
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, selectedBTNindex + 10, gomokuData[selectedBTNindex + 10]);
+
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, subSelectedBTNindex, gomokuData[subSelectedBTNindex]);
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, subSelectedBTNindex + 1, gomokuData[subSelectedBTNindex + 1]);
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, subSelectedBTNindex + 9, gomokuData[subSelectedBTNindex + 9]);
+                        PV.RPC("ChangeData", RpcTarget.AllBuffered, subSelectedBTNindex + 10, gomokuData[subSelectedBTNindex + 10]);
+
+                        // 변수값 초기화
+                        areaSelected = false;
+                        subAreaSelected = false;
+                        selectedBTNindex = -1;
+                        subSelectedBTNindex = -1;
+                        isConfirmed = false;
+                        myHandStatus = MyHandStatus.cannotUseCard;
+
+                        // 오목판 다시 그림
+                        PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                        endMyTurn();  // 턴을 끝냄
+                    }
                 }
 
                 break;
@@ -945,6 +1270,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         AreaBox.instance.setSize2_2();
     }
 
+    // 기능 : 영역 박스의 모양을 바둑판 1*1 크기의 정사각형으로 바꿈
+    // 참조 : GameManager.useMagicCard()
+    [PunRPC]
+    void AreaBox_set1_1()
+    {
+        AreaBox.instance.setSize1_1();
+    }
+
     // 기능 : 보조 영역 박스의 위치를 변경함
     // 매개변수 : newposition (보조 영역 박스가 존재해야할 새로운 위치)
     // 참조 : GameManager.useMagicCard()
@@ -953,7 +1286,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         areaboxPlus.transform.position = newposition;
     }
 
-    // 기능 : 보조 영역 박스의 모양을 바둑판 9*1 크기의 직사각형으로 바꿈 (가로)
+    // 기능 : 보조 영역 박스의 모양을 바둑판 9*1 크기의 직사각형으로 바꾸고 (가로), 박스의 색깔을 메인 영역 박스의 색깔과 동일하게 변경함
     // 참조 : GameManager.useMagicCard()
     [PunRPC] void AreaBoxPlus_set9_1()
     {
@@ -966,15 +1299,28 @@ public class GameManager : MonoBehaviourPunCallbacks
         AreaBoxPlus.instance.setSize9_1();
     }
 
-    // 기능 : 보조 영역 박스의 모양을 바둑판 2*2 크기의 정사각형으로 바꿈
+    // 기능 : 보조 영역 박스의 모양을 바둑판 2*2 크기의 정사각형으로 바꾸고, 박스의 색깔을 빨간색으로 변경함
     // 참조 : GameManager.useMagicCard()
     [PunRPC] void AreaBoxPlus_set2_2()
     {
         Color color = areaboxPlus.GetComponent<SpriteRenderer>().color;
         color = Color.red;
+        color.a = 0.3f;
         areaboxPlus.GetComponent<SpriteRenderer>().color = color;
 
         AreaBoxPlus.instance.setSize2_2(); 
+    }
+
+    // 기능 : 보조 영역 박스의 모양을 바둑판 1*1 크기의 정사각형으로 바꾸고, 박스의 색깔을 빨간색으로 변경함
+    // 참조 : GameManager.useMagicCard()
+    [PunRPC] void AreaBoxPlus_set1_1()
+    {
+        Color color = areaboxPlus.GetComponent<SpriteRenderer>().color;
+        color = Color.red;
+        color.a = 0.3f;
+        areaboxPlus.GetComponent<SpriteRenderer>().color = color;
+
+        AreaBoxPlus.instance.setSize1_1();
     }
 
 

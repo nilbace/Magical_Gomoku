@@ -67,6 +67,8 @@ MonoBehaviour:
   - AreaBoxPlus_set1_9
   - AreaBoxPlus_set2_2
   - AreaBoxPlus_set9_1
+  - AreaBox_set1_1
+  - AreaBoxPlus_set1_1
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
