@@ -29,6 +29,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public ParticleSystem part2;
     public ParticleSystem myshooting;
     public ParticleSystem enemyshooting;
+    bool timeron=false;
+    public float time=0;
+    GameObject timerins=null;
     AudioSource audioSource;
     AudioSource turnsfx;
 
@@ -43,6 +46,15 @@ public class GameManager : MonoBehaviourPunCallbacks
         repaintBoard();  // 오목판을 칠함
         turnsfx = this.gameObject.GetComponent<AudioSource>();
         audioSource = gomokuTable[0].gameObject.GetComponent<AudioSource>();
+    }
+
+    void Update() {
+        if(timeron) {
+            time+=Time.deltaTime;
+            if(time>=60) {
+                if(PV.IsMine) endMyTurn();
+            }
+        }
     }
 
     
@@ -77,14 +89,21 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isMyTurn = true;
         canuseCard = true;  // 카드를 사용할 수 있게 함
+        timeron=true;
         for (int i = 0; i < 81; i++)
         {
             if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
                 gomokuTable[i].interactable = true;
         }
-        var timerins=Instantiate(timer, new Vector3(-50,580,10), Quaternion.identity);
-        timerins.transform.SetParent(this.transform.parent.transform,false);
+        PV.RPC("timermake", RpcTarget.AllBuffered);
         NetWorkManager.instance.printScreenString("나의 턴");  // '나의 턴' 출력
+    }
+
+    [PunRPC] void timermake() {
+        if(timerins!=null) Destroy(timerins);
+        timerins=Instantiate(timer, new Vector3(-50,580,10), Quaternion.identity);
+        timerins.transform.SetParent(this.transform.parent.transform,false);
+        time=0;
     }
 
     // 나의 차례가 끝났을 때
