@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public Sprite whiteStone;  // 흰 돌 Sprite (이미지?)
     public Sprite blackStone;  // 검은 돌 Sprite
     public int[] gomokuData = new int[81];  // 81개 버튼들에 대한 데이터 (0:돌x, 1:검은돌, 2:흰돌)
-
+    public GameObject timer;
     int deleteStartNum;  // 오목이 완성돼서 5개의 돌을 제거할 때 시작되는 돌(버튼)의 번호. 항상 가장 왼쪽 위에 있는 (번호가 가장 작은) 버튼
     public ParticleSystem part;
     public ParticleSystem part2;
@@ -82,7 +82,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
                 gomokuTable[i].interactable = true;
         }
-        turnsfx.Play();
+        var timerins=Instantiate(timer, new Vector3(-50,580,10), Quaternion.identity);
+        timerins.transform.SetParent(this.transform.parent.transform,false);
         NetWorkManager.instance.printScreenString("나의 턴");  // '나의 턴' 출력
     }
 
