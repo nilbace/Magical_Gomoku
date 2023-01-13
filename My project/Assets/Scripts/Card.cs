@@ -95,8 +95,10 @@ public class Card : MonoBehaviourPunCallbacks
                 GameManager.instance.setMyuseCardStatus(cardData.indexNum);
                 GameManager.instance.canuseCard= false;
                 PlayerManager.myPlayerManager.destroyMe(myHandIndex);
-                if(cardData.indexNum==3) 
+                if (cardData.indexNum == 3)
                     GameManager.instance.setChangeEnemyStone();
+                else if (cardData.indexNum == 7)
+                    GameManager.instance.setCardIndexSeven();
             }
         }
 

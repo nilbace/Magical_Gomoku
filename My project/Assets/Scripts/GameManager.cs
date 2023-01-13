@@ -1194,6 +1194,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     // 참조 : GameManager.LoseGame()
     [PunRPC]public void GameOver(string result = "패배")
     {
+        // 카드 관련 변수값 모두 초기화
+        areaSelected = false;  // 영역을 선택했는지 여부
+        selectedBTNindex = -1;  // 영역을 선택했을 때, 기준이 되는 버튼의 번호
+        subAreaSelected = false;  // 보조 영역을 선택했는지 여부
+        subSelectedBTNindex = -1;  // 보조 영역을 선택했을 때, 기준이 되는 버튼의 번호
+        isConfirmed = false;  // 메인 영역이 확정됐는지 여부
+        putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
+        myHandStatus = MyHandStatus.cannotUseCard;
+
+        // 영역 박스를 보이지 않는 곳으로 치움
+        moveAreaBox(new Vector3(10, 10, 0));
+        moveAreaBoxPlus(new Vector3(12, 10, 0));
+
         ResultTMP.text = result;
         ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
         StartCoroutine(BackToLobby());
@@ -1344,45 +1357,79 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
 
-
+    // 기능 : 3번 (상대돌교체) 카드에 대해 상대 돌이 없으면 카드를 사용하는 것이 아닌 돌을 두게 함
     // 참조 : Card.OnMouseUp()
     public void setChangeEnemyStone(){
         bool flag=false;
         if(PhotonNetwork.IsMasterClient)
+        {
+            for(int i2 = 0;i2 <81;i2++)
+            {
+                if(gomokuData[i2]==(int)stoneColor.white) 
                 {
-                    for(int i2 = 0;i2 <81;i2++)
-                    {
-                        if(gomokuData[i2]==(int)stoneColor.white) {gomokuTable[i2].interactable=true; flag=true;}
-                        else gomokuTable[i2].interactable = false;
-                    }
-                    if(!flag) {
-                        NetWorkManager.instance.printScreenString("상대 돌이 없습니다");
-                        myHandStatus=MyHandStatus.cannotUseCard;
-                        for (int i = 0; i < 81; i++)
-                        {
-                            if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
-                                gomokuTable[i].interactable = true;
-                        }
-                    }
-
+                    gomokuTable[i2].interactable=true; 
+                    flag=true;
                 }
                 else
+                    gomokuTable[i2].interactable = false;
+            }
+            if(!flag) {
+                NetWorkManager.instance.printScreenString("상대 돌이 없습니다");
+                myHandStatus=MyHandStatus.cannotUseCard;
+                for (int i = 0; i < 81; i++)
                 {
-                    for(int i2 = 0;i2 <81;i2++)
-                    {
-                        if(gomokuData[i2]==(int)stoneColor.black) {gomokuTable[i2].interactable=true; flag=true;}
-                        else gomokuTable[i2].interactable = false;
-                    }
-                    if(!flag) {
-                        NetWorkManager.instance.printScreenString("상대 돌이 없습니다");
-                        myHandStatus=MyHandStatus.cannotUseCard;
-                        for (int i = 0; i < 81; i++)
-                        {
-                            if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
-                                gomokuTable[i].interactable = true;
-                        }
-                    }
+                    if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
+                        gomokuTable[i].interactable = true;
                 }
+            }
+
+        }
+        else
+        {
+            for(int i2 = 0;i2 <81;i2++)
+            {
+                if(gomokuData[i2]==(int)stoneColor.black) {gomokuTable[i2].interactable=true; flag=true;}
+                else gomokuTable[i2].interactable = false;
+            }
+            if(!flag) {
+                NetWorkManager.instance.printScreenString("상대 돌이 없습니다");
+                myHandStatus=MyHandStatus.cannotUseCard;
+                for (int i = 0; i < 81; i++)
+                {
+                    if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
+                        gomokuTable[i].interactable = true;
+                }
+            }
+        }
+    }
+
+
+    // 기능 : '돌 위치 변경' 카드를 사용했을 때 검은돌이 없거나 흰돌이 없거나 둘 다 없는경우 호출되어 처리함
+    // 참조 : Card.OnMouseUp()
+    public void setCardIndexSeven()
+    {
+        bool flag_black = false;
+        bool flag_white = false;
+
+        for (int i = 0; i < 81; i++) 
+        {
+            if (gomokuData[i] == (int)stoneColor.black)
+                flag_black = true;
+            if (gomokuData[i] == (int)stoneColor.white)
+                flag_white = true;
+        }
+
+        if (!(flag_black && flag_white))
+        {
+            NetWorkManager.instance.printScreenString("잘못된 카드 사용");
+
+            myHandStatus = MyHandStatus.cannotUseCard;
+            for (int i = 0; i < 81; i++)
+            {
+                if (gomokuData[i] == 0)   // 아직 돌을 두지 않은 부분만 클릭할 수 있게 함
+                    gomokuTable[i].interactable = true;
+            }
+        }
     }
 
     #endregion
