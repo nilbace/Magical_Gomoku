@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using DG.Tweening;
 
 public class Card : MonoBehaviourPunCallbacks
 {
@@ -125,11 +126,11 @@ public class Card : MonoBehaviourPunCallbacks
     {
         if(isEnlarge)
         {
-            transform.localScale = new Vector2(4, 4);  // 카드 크기를 키움
+            transform.DOScale(new Vector3((transform.position.y+6.69f),(transform.position.y+6.69f),0),0);// 카드 크기를 키움
         }
         else
         {
-            transform.localScale = new Vector2(2f, 2f);  // 카드 크기를 원래대로 되돌림
+            transform.localScale = new Vector2(2.09f, 2.09f);  // 카드 크기를 원래대로 되돌림
         }
     }
     
