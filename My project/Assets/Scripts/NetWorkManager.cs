@@ -54,7 +54,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, multiple = 5;
-    public bool AlreadyLobbyed = false;  //이미 로비에 갔었다면 Disconnected됐다가 다시 연결됐을 때 로비로 돌아감
+    public bool AlreadyLobbyed = false;     //이미 로비에 갔었다면 Disconnected됐다가 다시 연결됐을 때 로비로 돌아감
+                                            //처음에 마법학교로 버튼 누르면 true된후에 계속 true로 냅두면됨
 
     [Header("Game")]
     public GameObject GamePannel;  // 게임 패널
