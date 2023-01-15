@@ -90,7 +90,9 @@ public class Card : MonoBehaviourPunCallbacks
             // 카드를 발동하던 하지 않던 카드는 원래 위치로 되돌림
             // 카드를 발동하면 카드를 파괴하므로 의미가 없지만, 카드를 발동하지 않으면 카드가 원래 있었던 위치로 되돌아가게 됨
             transform.position = originPos;  // 카드의 위치를 원래 이 카드가 있었던 위치로
-
+            
+            transform.DOKill();
+            transform.localScale = new Vector2(2.09f, 2.09f);
             if (GameManager.instance.canuseCard && MouseWorldPosition().y>0)  // 이 카드를 사용할 수 있는 상태이고, 이 카드의 월드 좌표가 0보다 크면
             {
                 GameManager.instance.setMyuseCardStatus(cardData.indexNum);
@@ -126,7 +128,10 @@ public class Card : MonoBehaviourPunCallbacks
     {
         if(isEnlarge)
         {
-            transform.DOScale(new Vector3((transform.position.y+6.69f),(transform.position.y+6.69f),0),0);// 카드 크기를 키움
+            transform.localScale = new Vector2(2.69f, 2.69f);
+            if(transform.position.y+4.2f>=2.8f) {
+                transform.DOScale(new Vector3(6f,6f,0),0.25f);// 카드 크기를 키움
+            }  
         }
         else
         {
