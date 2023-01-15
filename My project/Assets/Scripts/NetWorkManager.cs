@@ -54,6 +54,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public Button previousPage; public Button nextPage;
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, multiple = 5;
+    public bool AlreadyLobbyed = false;  //이미 로비에 갔었다면 Disconnected됐다가 다시 연결됐을 때 로비로 돌아감
 
     [Header("Game")]
     public GameObject GamePannel;  // 게임 패널
@@ -149,12 +150,18 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         status.text = "학교가는중";
         gotoSchoolBTN.interactable=true;
         PhotonNetwork.LocalPlayer.NickName = playerData.name;
+        if(AlreadyLobbyed)
+        {
+            closeAllPannel();
+            LobbyPannel.SetActive(true);
+        }
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         status.color = Color.red;
-        status.text = "연결실패 재접속해주세요";
+        status.text = "연결실패 재접속중";
+        PhotonNetwork.ConnectUsingSettings();
     }
 
     // 스타트화면 -> 마법학교로 버튼의 이벤트 함수
@@ -164,6 +171,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.JoinLobby();
             myList.Clear();
+            AlreadyLobbyed = true;
         }
     }
 
