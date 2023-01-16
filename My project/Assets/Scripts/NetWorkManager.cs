@@ -19,6 +19,9 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public static NetWorkManager instance = null; 
     public TextMeshProUGUI status; 
     
+    public GameObject background;
+    public Sprite bg1;
+    public Sprite bg2;
 
     private void Awake() // 싱글턴
     {
@@ -95,6 +98,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         {
             closeAllPannel();
             StartPannel.SetActive(true);  // 모든 패널을 닫고 스타트화면만 활성화함
+            changebg();
         }
         else  // 일지정지로 돌아가야되면 (게임 중에 환경설정을 연 경우)
         {
@@ -145,6 +149,13 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         bgmslid.value=playerData.bgmvol;
     }
 
+    void changebg() {
+        var img=background.GetComponent<Image>();
+        if(StartPannel.activeSelf==true) img.sprite=bg1;
+        else img.sprite=bg2;
+        
+    }
+
     public override void OnConnectedToMaster()
     {
         status.color= Color.green;
@@ -174,6 +185,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             myList.Clear();
             AlreadyLobbyed = true;
         }
+        changebg();
     }
 
     // 스타트화면 -> '나가기' 버튼의 이벤트 함수
@@ -181,6 +193,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         closeAllPannel();
         GameEndPannel.SetActive(true);  // 게임 종료 패널을 활성화함
+        changebg();
     }
 
     // 스타트화면 -> '설정' 버튼의 이벤트 함수
@@ -188,12 +201,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         closeAllPannel();
         SettingPannel.SetActive(true);  // 설정 패널을 활성화함
+        changebg();
     }
 
     // 스타트화면 -> '제작진' 버튼의 이벤트 함수
     public void productionStaffBTN() 
     {
         printScreenString("미개발상태");
+        changebg();
     }
 
     #endregion
@@ -211,6 +226,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         closeAllPannel();
         StartPannel.SetActive(true);  // 스타트화면 활성화
+        changebg();
     }
 
     #endregion
@@ -222,6 +238,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         closeAllPannel();
         StartPannel.SetActive(true);  // 스타트화면 활성화
+        changebg();
     }
     public override void OnJoinedLobby()
     {
@@ -229,6 +246,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         MyListRenewal();
         myList.Clear();
         status.text="실습실 가는중";
+        changebg();
     }
 
     public void CreateRoom() 
@@ -304,6 +322,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         GamePannel.SetActive(true);
         status.text="실습 상대 기다리는중";
         PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+        changebg();
     }
     
     
@@ -312,6 +331,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LeaveRoom();
         closeAllPannel(); LobbyPannel.SetActive(true);
+        changebg();
     }
 
     #endregion

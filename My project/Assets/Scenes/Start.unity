@@ -6528,6 +6528,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PV: {fileID: 368019339}
   status: {fileID: 2046255486}
+  background: {fileID: 786270577}
+  bg1: {fileID: 21300000, guid: 9cc6287bbd6c694438c26f7d3c43af42, type: 3}
+  bg2: {fileID: 21300000, guid: 97a00dc9f2612a242a053bf9c9e1863a, type: 3}
   SettingPannel: {fileID: 1001384215}
   changenameInputfield: {fileID: 1317791061}
   StartPannel: {fileID: 1047983808}
@@ -6545,6 +6548,7 @@ MonoBehaviour:
   - {fileID: 168814760}
   previousPage: {fileID: 148746951}
   nextPage: {fileID: 738991467}
+  AlreadyLobbyed: 0
   GamePannel: {fileID: 1242261012}
   pausePannel: {fileID: 1407523968}
   audiomixer: {fileID: 24100000, guid: e16ff734ed10ec04693cf89f9ce6c522, type: 2}
@@ -13881,7 +13885,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9df71178701c25e40b3c5a5f142ad21e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9cc6287bbd6c694438c26f7d3c43af42, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -27210,6 +27214,12 @@ MonoBehaviour:
   canuseCard: 0
   isMyTurn: 0
   myHandStatus: -1
+  areaSelected: 0
+  selectedBTNindex: -1
+  subAreaSelected: 0
+  subSelectedBTNindex: -1
+  isConfirmed: 0
+  putStoneTwice: 1
   bluebox3_3: {fileID: 1528506847}
   areaboxPlus: {fileID: 126348816}
   ResultPannel: {fileID: 1933504611}
