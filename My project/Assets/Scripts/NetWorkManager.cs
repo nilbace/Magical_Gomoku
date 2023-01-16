@@ -325,8 +325,26 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         StartPannel.SetActive(false);
         GameEndPannel.SetActive(false);
         LobbyPannel.SetActive(false);
+        gamepannelset();
         GamePannel.SetActive(false);
         pausePannel.SetActive(false);
+    }
+
+    void gamepannelset() {
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("Card");
+        foreach(GameObject card in cards)  // 게임에서 사용한 카드들을 모두 파괴함
+        {
+            Destroy(card);
+        }
+        if(GameManager.instance) {
+            GameManager.instance.areaSelected = false;  // 영역을 선택했는지 여부
+            GameManager.instance.selectedBTNindex = -1;  // 영역을 선택했을 때, 기준이 되는 버튼의 번호
+            GameManager.instance.subAreaSelected = false;  // 보조 영역을 선택했는지 여부
+            GameManager.instance.subSelectedBTNindex = -1;  // 보조 영역을 선택했을 때, 기준이 되는 버튼의 번호
+            GameManager.instance.isConfirmed = false;  // 메인 영역이 확정됐는지 여부
+            GameManager.instance.putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
+            GameManager.instance.myHandStatus = GameManager.MyHandStatus.cannotUseCard;
+        }
     }
     
     [Header("택스트 경고")]

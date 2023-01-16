@@ -123,7 +123,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 오목관련+카드
-    enum MyHandStatus{
+    public enum MyHandStatus{
         cannotUseCard = -1,  // 카드를 쓰면 안되는 상태 (상대턴이거나 혹은 내 턴인데 이미 카드를 쓴 경우)
         reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone2_2, allRandomRelocate, deleteCross, stoneExchange, exchangeArea2_2  // 카드 종류
     }
@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /* myHandStatus : 현재 사용하려고 하는 카드의 정보
    기본적으로 카드를 사용하지 않는 것으로 초기화 함
    myHandStatus는 카드를 발동했을 때만 cannotUseCard 상태가 아니게됨 */
-    [SerializeField] MyHandStatus myHandStatus = MyHandStatus.cannotUseCard;
+    [SerializeField] public MyHandStatus myHandStatus = MyHandStatus.cannotUseCard;
 
 
     // 기능 : 버튼이 클릭됐을 때 버튼의 번호를 받아서 그 위치에 돌을 두거나 카드를 사용함
@@ -209,12 +209,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-    bool areaSelected = false;  // 영역을 선택했는지 여부
-    int selectedBTNindex = -1;  // 영역을 선택했을 때, 기준이 되는 버튼의 번호
-    bool subAreaSelected = false;  // 보조 영역을 선택했는지 여부
-    int subSelectedBTNindex = -1;  // 보조 영역을 선택했을 때, 기준이 되는 버튼의 번호
-    bool isConfirmed = false;  // 메인 영역이 확정됐는지 여부
-    bool putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
+    public bool areaSelected = false;  // 영역을 선택했는지 여부
+    public int selectedBTNindex = -1;  // 영역을 선택했을 때, 기준이 되는 버튼의 번호
+    public bool subAreaSelected = false;  // 보조 영역을 선택했는지 여부
+    public int subSelectedBTNindex = -1;  // 보조 영역을 선택했을 때, 기준이 되는 버튼의 번호
+    public bool isConfirmed = false;  // 메인 영역이 확정됐는지 여부
+    public bool putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
     public GameObject bluebox3_3;  // 영역 선택 박스
     public GameObject areaboxPlus;  // 영역 선택 박스 2 (보조)
 
@@ -1262,7 +1262,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             gomokuData[i]=0; gomokuTable[i].interactable=false;
         }
-
+        timeron=false;
+        Destroy(timerins);
         // 각 매니저 필요한거 초기화
         PlayerManager.myPlayerManager = PlayerManager.myPlayerManager;  // 나
         PlayerManager.enemyPlayerManager = PlayerManager.enemyPlayerManager;  // 상대방
