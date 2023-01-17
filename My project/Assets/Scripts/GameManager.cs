@@ -148,8 +148,42 @@ public class GameManager : MonoBehaviourPunCallbacks
     // 참조 : 어떤 카드를 발동할 때(Card.OnMouseUp())
     public void setMyuseCardStatus(int index)
     {
-        myHandStatus = (MyHandStatus)index;
-        interactableAllBTN();  // 모든 버튼들을 활성화함
+        if ((MyHandStatus)index == MyHandStatus.allRandomRelocate)  // 오목판 위의 돌을 모두 랜덤 재배치하는 카드 (5) : index 5 - 바로 수행
+        {
+            // 랜덤 재배치 시작
+            for (int i2 = 0; i2 < 9; i2++)  // 모든 돌들을 랜덤하게 재배치
+            {
+                for (int j2 = 0; j2 < 9; j2++)
+                {
+                    int rand = Random.Range(0, 81);
+                    int place = i2 + j2 * 9;
+
+                    // Swap
+                    int temp = gomokuData[place];
+                    gomokuData[place] = gomokuData[rand];
+                    gomokuData[rand] = temp;
+
+                }
+            }
+
+            for (int i2 = 0; i2 < 9; i2++)  // 랜덤하게 재배치한 데이터 동기화
+            {
+                for (int j2 = 0; j2 < 9; j2++)
+                {
+                    int place = i2 + j2 * 9;
+                    int tempdata = gomokuData[place];
+                    PV.RPC("ChangeData", RpcTarget.AllBuffered, place, tempdata);
+                }
+            }
+
+            PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+            endMyTurn();
+        }
+        else
+        {
+            myHandStatus = (MyHandStatus)index;
+            interactableAllBTN();  // 모든 버튼들을 활성화함
+        }
     }
 
 
@@ -364,7 +398,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                 endMyTurn();  // 턴을 끝냄
             break;
 
-            // 2*2로 바꿔야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------------------------------------------------
             // 원하는 2*2 영역에서 흰돌은 검은돌로, 검은돌은 흰돌로 바꾸는 카드 (2) : index 4
             case MyHandStatus.reverseStone2_2:
                if(i ==8 || j == 8)
@@ -408,41 +441,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                         endMyTurn();  // 턴을 끝냄
                     }
                 } 
-
-                break;
-
-            // 오목판 위의 돌을 모두 랜덤 재배치하는 카드 (5) : index 5
-            case MyHandStatus.allRandomRelocate:
-                myHandStatus = MyHandStatus.cannotUseCard;
-
-                // 랜덤 재배치 시작
-                for (int i2 = 0; i2 < 9; i2++)  // 모든 돌들을 랜덤하게 재배치
-                {
-                    for (int j2 = 0; j2 < 9; j2++)
-                    {
-                        int rand = Random.Range(0, 81);
-                        int place = i2 + j2 * 9;
-
-                        // Swap
-                        int temp = gomokuData[place];
-                        gomokuData[place] = gomokuData[rand];
-                        gomokuData[rand] = temp;
-
-                    }
-                }
-
-                for (int i2 = 0; i2 < 9; i2++)  // 랜덤하게 재배치한 데이터 동기화
-                {
-                    for (int j2 = 0; j2 < 9; j2++)
-                    {
-                        int place = i2 + j2 * 9;
-                        int tempdata = gomokuData[place];
-                        PV.RPC("ChangeData", RpcTarget.AllBuffered, place, tempdata);
-                    }
-                }
-
-                PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
-                endMyTurn();
 
                 break;
 
