@@ -117,6 +117,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             gomokuTable[i].interactable=false;
         }
+        StartCoroutine("turndelay");
+    }
+
+    IEnumerator turndelay() {
+        yield return new WaitForSeconds(0.5f);
         turnsfx.Play();
         PV.RPC("startMyTurn", RpcTarget.OthersBuffered);  // 상대방에게 턴을 넘겨줌
     }
@@ -1163,7 +1168,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 }
             }
         }
+
+        if(drawcheck()) draw();
         return -1;  // 오목이 완성되지 않은 상태라면 -1을 반환함
+    }
+
+     bool drawcheck() {
+        for(int i=0; i<81; i++) {
+            if(gomokuData[i]==0) return false;
+        }
+        return true;
     }
 
     #endregion
