@@ -141,12 +141,28 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         setResolution();  // 해상도 설정
         PhotonNetwork.ConnectUsingSettings();
         status.color = Color.magenta; status.text = "연결중";
-        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false;  // 스타트화면만 활성화함
+        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false; dunguldisable();  // 스타트화면만 활성화함
         LoadPlayerDatafromJson();  // json 파일로부터 플레이어 데이터를 가져옴
 
         masterslid.value=playerData.mastervol;
         sfxslid.value=playerData.sfxvol;
         bgmslid.value=playerData.bgmvol;
+    }
+    
+    public GameObject dungul;
+    public void dunguldown() {
+        var img=dungul.GetComponent<Image>();
+        img.color=new Color(0.7843137f, 0.7843137f, 0.7843137f,1);
+    }
+
+    public void dungulup() {
+        var img=dungul.GetComponent<Image>();
+        img.color=new Color(1, 1, 1,1);
+    }
+
+    void dunguldisable() {
+        var img=dungul.GetComponent<Image>();
+        img.color=new Color(0.7843137f, 0.7843137f, 0.7843137f,0.5019f);
     }
 
     void changebg() {
@@ -160,7 +176,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         status.color= Color.green;
         status.text = "학교가는중";
-        gotoSchoolBTN.interactable=true;
+        gotoSchoolBTN.interactable=true; dungulup();
         PhotonNetwork.LocalPlayer.NickName = playerData.name;
         if(AlreadyLobbyed)
         {
