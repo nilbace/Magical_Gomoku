@@ -333,7 +333,6 @@ MonoBehaviour:
   drawready: 0
   drawimg: {fileID: 21300000, guid: b558742e21094dc4ba35dd8805d2b1f1, type: 3}
   character_img: {fileID: 6086542188442052541}
-  isCardSelected: 0
   MyHP: 3
   hp1: {fileID: 3746915193662516254}
   hp2: {fileID: 4974458439405721167}

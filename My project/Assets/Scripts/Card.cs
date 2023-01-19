@@ -22,50 +22,6 @@ public class Card : MonoBehaviourPunCallbacks
     Vector3 originPos;  // 이 카드의 원래 위치 (아무 동작도 하지 않으면 카드 5개가 게임 하단, 캐릭터 우측에 배치되어있음)
     Vector3 offset;
 
-    public bool isSelected = false;
-
-    private float clickTime;
-    public float minClickTime = 1.0f;
-    bool isClick;
-    bool isEnlargeCard = false;
-    Vector3 touchPosition;
-
-
-    private void Update()
-    {
-        if (isClick)
-        {
-            clickTime += Time.deltaTime;
-        }
-        else
-        {
-            clickTime = 0;
-        }
-
-        if (clickTime >= minClickTime)
-        {
-            isClick = false;
-            Debug.Log("긴터치인식");
-
-            if (!PlayerManager.myPlayerManager.isCardSelected && !isSelected)
-            {
-                PlayerManager.myPlayerManager.isCardSelected = true;
-                isSelected = true;
-                isEnlargeCard = true;
-                originPos = transform.position;
-            }
-            else if (PlayerManager.myPlayerManager.isCardSelected && isSelected)
-            {
-                PlayerManager.myPlayerManager.isCardSelected = false;
-                isSelected = false;
-                isEnlargeCard = false;
-                transform.position = originPos;
-            }
-        }
-
-        EnlargeCard(isEnlargeCard);
-    }
-
 
     // 기능 : 카드를 설정해줌
     // 매개변수 : cardData (카드의 정보), isMine 
@@ -91,7 +47,7 @@ public class Card : MonoBehaviourPunCallbacks
     }
 
     // 기능 : 마우스를 카드 위에 올려놓으면 카드가 커지게 함 (클릭 X)
-    /*private void OnMouseOver() {
+    private void OnMouseOver() {
         if(isMine)  // 내 카드만 조작할 수 있게 함
         {
             bool enlarge = true;
@@ -110,55 +66,37 @@ public class Card : MonoBehaviourPunCallbacks
         }
 
         
-    }*/
+    }
 
     // OnMouseDown, OnMouseDrag, OnMouseUp : 마우스 클릭 이벤트 함수
 
 
     private void OnMouseDown()
     {  // 이 카드를 클릭(터치)한 순간 호출됨
-        if (isMine && isSelected)
+        if (isMine)
             originPos = transform.position;  // 카드의 원래 위치를 저장해둠
-
-        isClick = true;
-        touchPosition = MouseWorldPosition();
-        //Debug.Log(MouseWorldPosition());
     }
 
     private void OnMouseDrag()
     {  // 이 카드를 움직일 때 호출됨
-        if (isMine && isSelected)
+        if (isMine)
             transform.position = MouseWorldPosition() + offset;
-
-        Vector3 currentTouchPosition = MouseWorldPosition();
-        //Debug.Log((touchPosition.x - 0.2f <= currentTouchPosition.x && currentTouchPosition.x <= touchPosition.x+0.2f) && (touchPosition.y - 0.2f <= currentTouchPosition.y && currentTouchPosition.y <= touchPosition.y + 0.2f));
-        if (!((touchPosition.x - 0.2f <= currentTouchPosition.x && currentTouchPosition.x <= touchPosition.x + 0.2f) && (touchPosition.y - 0.2f <= currentTouchPosition.y && currentTouchPosition.y <= touchPosition.y + 0.2f)))
-        {
-            //Debug.Log("벗어남");
-            isClick = false;
-        }
     }
 
     private void OnMouseUp()
     {  // 이 카드를 누르고 있던 상태에서 떼는 순간 호출됨
-        isClick = false;
-
-        if (isMine && isSelected)
+        if (isMine) 
         {
             // 카드를 발동하던 하지 않던 카드는 원래 위치로 되돌림
             // 카드를 발동하면 카드를 파괴하므로 의미가 없지만, 카드를 발동하지 않으면 카드가 원래 있었던 위치로 되돌아가게 됨
             transform.position = originPos;  // 카드의 위치를 원래 이 카드가 있었던 위치로
-
+            
             transform.DOKill();
             transform.localScale = new Vector2(2.09f, 2.09f);
-            if (GameManager.instance.canuseCard && MouseWorldPosition().y > 0)  // 이 카드를 사용할 수 있는 상태이고, 이 카드의 월드 좌표가 0보다 크면
+            if (GameManager.instance.canuseCard && MouseWorldPosition().y>0)  // 이 카드를 사용할 수 있는 상태이고, 이 카드의 월드 좌표가 0보다 크면
             {
-                PlayerManager.myPlayerManager.isCardSelected = false;
-                isSelected = false;
-                isEnlargeCard = false;
-
                 GameManager.instance.setMyuseCardStatus(cardData.indexNum);
-                GameManager.instance.canuseCard = false;
+                GameManager.instance.canuseCard= false;
                 PlayerManager.myPlayerManager.destroyMe(myHandIndex);
                 if (cardData.indexNum == 3)
                     GameManager.instance.setChangeEnemyStone();
