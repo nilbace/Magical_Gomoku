@@ -40,6 +40,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public Sprite drawimg;
     public GameObject character_img;
 
+    public bool isCardSelected = false;
+
     private void Start() {
         if(PV.IsMine){ 
             SetupItemBuffer();  // cardDataBuffoer에 모든 CardData들을 랜덤하게 섞음
