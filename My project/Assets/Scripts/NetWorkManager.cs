@@ -21,6 +21,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public GameObject background;
     public Sprite bg1;
     public Sprite bg2;
+    public Sprite bg3;
+    public Sprite bg4;  
 
     private void Awake() // 싱글턴
     {
@@ -43,6 +45,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [Header("Start")]
     public GameObject StartPannel;  // 스타트화면
     public Button gotoSchoolBTN;  // 스타트화면 - '마법학교로' 버튼
+    public GameObject staffPannel;  // 제작진 패널
 
     [Header("GameEndPannel")]
     public GameObject GameEndPannel;  // 게임종료패널
@@ -160,8 +163,10 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     void changebg() {
         var img=background.GetComponent<Image>();
-        if(StartPannel.activeSelf==true) img.sprite=bg1;
-        else img.sprite=bg2;
+        if (StartPannel.activeSelf == true) img.sprite = bg1;
+        else if (LobbyPannel.activeSelf == true) img.sprite = bg3;
+        else if (GamePannel.activeSelf == true) img.sprite = bg4;
+        else img.sprite = bg2;
         
     }
 
@@ -212,7 +217,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 스타트화면 -> '제작진' 버튼의 이벤트 함수
     public void productionStaffBTN() 
     {
-        printScreenString("미개발상태");
+        staffPannel.SetActive(true);
+
         changebg();
     }
 
@@ -473,7 +479,11 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 참조 : NetWorkManager.Update()
     void HandlingBackButton()
     {
-        if (SettingPannel.activeSelf == true)  // 설정 패널 열려있음
+        if (StartPannel.activeSelf == true && staffPannel.activeSelf == true)
+        {
+            staffPannel.SetActive(false);
+        }
+        else if (SettingPannel.activeSelf == true)  // 설정 패널 열려있음
         {
             closeSettingPannel(); 
         }

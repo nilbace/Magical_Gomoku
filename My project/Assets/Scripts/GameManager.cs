@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public PhotonView PV;
     public Button[] gomokuTable;  // 버튼 81개로 오목판(테이블)을 구성함
-    public Sprite whiteStone;  // 흰 돌 Sprite (이미지?)
+    public Sprite whiteStone;  // 흰 돌 Sprite
     public Sprite blackStone;  // 검은 돌 Sprite
     public int[] gomokuData = new int[81];  // 81개 버튼들에 대한 데이터 (0:돌x, 1:검은돌, 2:흰돌)
     public GameObject timer;
@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     GameObject timerins=null;
     AudioSource audioSource;
     AudioSource turnsfx;
+
+    public GameObject ResultPannelBg;
+    public Sprite winImage;
 
     
     enum stoneColor{ black = 1, white = 2 }
@@ -1220,6 +1223,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         moveAreaBoxPlus(new Vector3(12, 10, 0));
 
         ResultTMP.text = result;
+
+        var resultBg = ResultPannelBg.GetComponent<Image>();
+        if (result == "승리")
+        {
+            resultBg.sprite = winImage;
+            ResultTMP.text = "";  // 임시
+        }
+        else
+        {
+            resultBg.sprite = null;
+        }
+
+
         ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
         StartCoroutine(BackToLobby());
     }
