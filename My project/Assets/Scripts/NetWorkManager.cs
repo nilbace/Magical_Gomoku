@@ -26,16 +26,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     private void Awake() // 싱글턴
     {
-        if (instance == null) 
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject); 
-        }
-        else
-        {
-            if (instance != this)
-                Destroy(this.gameObject);
-        }
+        instance=this;
     }
     
     [Header("Setting")]
@@ -164,13 +155,13 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public int checkbug;
 
     void changebg() {
+        print(checkbug); checkbug++;
         Image img=background;
         if (StartPannel.activeSelf == true) img.sprite = bg1;
         else if (LobbyPannel.activeSelf == true) img.sprite = bg3;
         else if (GamePannel.activeSelf == true) img.sprite = bg4;
         else img.sprite = bg2;
 
-        print(checkbug); checkbug++;
     }
 
     public override void OnConnectedToMaster()
@@ -331,9 +322,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 게임 화면
     public override void OnJoinedRoom()
     {
-        closeAllPannel();
-        GamePannel.SetActive(true);
-        changebg();
+        if(GamePannel.activeSelf==false)
+        {
+            closeAllPannel();
+            GamePannel.SetActive(true);
+            changebg();
+        }
 
         PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
@@ -358,9 +352,9 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         StartPannel.SetActive(false);
         GameEndPannel.SetActive(false);
         LobbyPannel.SetActive(false);
-        gamepannelset();
         GamePannel.SetActive(false);
         pausePannel.SetActive(false);
+        gamepannelset();
     }
 
     void gamepannelset() {
