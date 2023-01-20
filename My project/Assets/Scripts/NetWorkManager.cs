@@ -270,7 +270,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             return;
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
-        closeAllPannel(); GamePannel.SetActive(true);
+        closeAllPannel(); GamePannel.SetActive(true); changebg();
         GameManager.instance.startRoom();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
