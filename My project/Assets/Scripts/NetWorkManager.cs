@@ -17,7 +17,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
     public static NetWorkManager instance = null; 
-    public TextMeshProUGUI status; 
     
     public GameObject background;
     public Sprite bg1;
@@ -75,11 +74,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             clientNumberTMP.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
             "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
             welcomeTMP.text = PhotonNetwork.LocalPlayer.NickName + "님 환영합니다";  // 상단 문자열 설정
-        }
-
-        if (GamePannel.activeSelf && PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom.PlayerCount == 2) 
-        {
-            status.text = "실습중";
         }
 
         if (Application.platform == RuntimePlatform.Android)   // 플랫폼이 안드로이드이면
@@ -140,7 +134,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         setResolution();  // 해상도 설정
         PhotonNetwork.ConnectUsingSettings();
-        status.color = Color.magenta; status.text = "연결중";
         closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false; dunguldisable();  // 스타트화면만 활성화함
         LoadPlayerDatafromJson();  // json 파일로부터 플레이어 데이터를 가져옴
 
@@ -174,8 +167,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        status.color= Color.green;
-        status.text = "학교가는중";
         gotoSchoolBTN.interactable=true; dungulup();
         PhotonNetwork.LocalPlayer.NickName = playerData.name;
         if(AlreadyLobbyed)
@@ -187,8 +178,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        status.color = Color.red;
-        status.text = "연결실패 재접속중";
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -261,7 +250,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         closeAllPannel(); LobbyPannel.SetActive(true);
         MyListRenewal();
         myList.Clear();
-        status.text="실습실 가는중";
         changebg();
     }
 
@@ -336,7 +324,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         closeAllPannel();
         GamePannel.SetActive(true);
-        status.text="실습 상대 기다리는중";
         PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         changebg();
     }
