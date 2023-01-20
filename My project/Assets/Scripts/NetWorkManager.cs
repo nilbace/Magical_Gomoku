@@ -18,7 +18,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public PhotonView PV;
     public static NetWorkManager instance = null; 
     
-    public GameObject background;
+    public Image background;
     public Sprite bg1;
     public Sprite bg2;
     public Sprite bg3;
@@ -161,13 +161,16 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         img.color=new Color(0.7843137f, 0.7843137f, 0.7843137f,0.5019f);
     }
 
+    public int checkbug;
+
     void changebg() {
-        var img=background.GetComponent<Image>();
+        Image img=background;
         if (StartPannel.activeSelf == true) img.sprite = bg1;
         else if (LobbyPannel.activeSelf == true) img.sprite = bg3;
         else if (GamePannel.activeSelf == true) img.sprite = bg4;
         else img.sprite = bg2;
-        
+
+        print(checkbug); checkbug++;
     }
 
     public override void OnConnectedToMaster()
@@ -268,7 +271,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         }
         PhotonNetwork.CreateRoom(roomnameField.text, new RoomOptions{MaxPlayers=2}, null);
         closeAllPannel(); GamePannel.SetActive(true);
-        GameManager.instance.Start();
+        GameManager.instance.startRoom();
     }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
@@ -282,7 +285,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         else if(num == -1) ++currentPage;
         else {
         PhotonNetwork.JoinRoom(myList[multiple+num].Name);
-        GameManager.instance.Start();}
+        GameManager.instance.startRoom();}
         MyListRenewal();
     }
 
@@ -330,8 +333,9 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         closeAllPannel();
         GamePannel.SetActive(true);
-        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         changebg();
+
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
     
     

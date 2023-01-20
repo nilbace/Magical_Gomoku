@@ -42,8 +42,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     enum stoneColor{ black = 1, white = 2 }
 
     public bool canuseCard;  // 카드를 드래그했을때 써지는지 여부 금방금방 꺼짐
-    
-    public void Start() {
+
+    public void startRoom()
+    {
         resetGameData();  // 게임 데이터 초기화 (돌, 나와 상대방 PlayerManager)
         unInteractableAllBTN();
         repaintBoard();  // 오목판을 칠함
