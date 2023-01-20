@@ -63,11 +63,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
   
     void Update()
     {   
-        if(LobbyPannel.activeSelf)  // 로비 패널이 열려있으면
+        if(AlreadyLobbyed)
         {
-            clientNumberTMP.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) +
-            "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
-            welcomeTMP.text = PhotonNetwork.LocalPlayer.NickName + "님 환영합니다";  // 상단 문자열 설정
+            if(!PhotonNetwork.InLobby && !PhotonNetwork.InRoom)
+            {
+                PhotonNetwork.JoinLobby();
+            }
         }
 
         if (Application.platform == RuntimePlatform.Android)   // 플랫폼이 안드로이드이면
@@ -77,6 +78,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
                 HandlingBackButton(); 
             }
         }
+
+        print(PhotonNetwork.NetworkClientState.ToString());
     }
 
     #region 세팅화면
@@ -161,7 +164,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         else if (LobbyPannel.activeSelf == true) img.sprite = bg3;
         else if (GamePannel.activeSelf == true) img.sprite = bg4;
         else img.sprite = bg2;
-
     }
 
     public override void OnConnectedToMaster()
@@ -241,6 +243,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 로비패널 -> '이전 화면' 버튼의 이벤트 함수
     public void toStartPannelBTN()
     {
+        AlreadyLobbyed=false;
         closeAllPannel();
         StartPannel.SetActive(true);  // 스타트화면 활성화
         changebg();
@@ -563,20 +566,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         closeAllPannel();
         LobbyPannel.SetActive(true);  // 모든 패널을 끄고 로비 패널만 활성화함
         PhotonNetwork.LeaveRoom();
-        StartCoroutine(afterEndGame());
-    }
-
-    IEnumerator afterEndGame()
-    {
-        while(true)
-        {
-            yield return new WaitForSeconds(1f);
-            if(PhotonNetwork.IsConnected)
-            {
-                PhotonNetwork.JoinLobby();
-                break;
-            }
-        }
     }
 
     #endregion
