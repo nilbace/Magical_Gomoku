@@ -78,8 +78,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
                 HandlingBackButton(); 
             }
         }
-
-        print(PhotonNetwork.NetworkClientState.ToString());
     }
 
     #region 세팅화면
@@ -243,7 +241,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 로비패널 -> '이전 화면' 버튼의 이벤트 함수
     public void toStartPannelBTN()
     {
-        AlreadyLobbyed=false;
         closeAllPannel();
         StartPannel.SetActive(true);  // 스타트화면 활성화
         changebg();
