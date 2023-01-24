@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
 
-// Resources/Player¿¡ ºÙ¾îÀÖÀ½
+// Resources/Playerï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ï¿½ï¿½
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
     public static PlayerManager myPlayerManager = null;
@@ -33,22 +33,24 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     AudioSource audioSource;
     public List<Card> myCards;
     public List<GameObject> myCardsGameObj;
-    public Vector3 myCardsLeft;  // °¡Àå ¿ÞÂÊ Ä«µåÀÇ À§Ä¡
-    public Vector3 myCardsRight;  // °¡Àå ¿À¸¥ÂÊ Ä«µåÀÇ À§Ä¡
+    public Vector3 myCardsLeft;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+    public Vector3 myCardsRight;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
 
     public bool drawready=false;
     public Sprite drawimg;
     public GameObject character_img;
+    public Sprite omokman;
 
     private void Start() {
         if(PV.IsMine){ 
-            SetupItemBuffer();  // cardDataBuffoer¿¡ ¸ðµç CardDataµéÀ» ·£´ýÇÏ°Ô ¼¯À½
+            SetupItemBuffer();  // cardDataBuffoerï¿½ï¿½ ï¿½ï¿½ï¿½ CardDataï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½
             cardindex =new int[cardDataBuffer.Count];
             for(int i=0; i<cardDataBuffer.Count; i++) {
                 cardindex[i]=cardDataBuffer[i].indexNum;
             }
             PV.RPC("cardsyncro", RpcTarget.OthersBuffered, cardindex);
             AddFiveCard();
+            character_img.GetComponent<SpriteRenderer>().sprite=omokman;
         }
         
         transform.position = new Vector3(-2,-3.8f);
@@ -83,15 +85,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // ±â´É : Ä«µå Á¦°Å (µ¿±âÈ­)
-    // ÂüÁ¶ : Ä«µå¸¦ ¹ßµ¿ÇÏ¸é È£ÃâµÊ (Card.OnMouseUp())
+    // ï¿½ï¿½ï¿½ : Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½È­)
+    // ï¿½ï¿½ï¿½ï¿½ : Ä«ï¿½å¸¦ ï¿½ßµï¿½ï¿½Ï¸ï¿½ È£ï¿½ï¿½ï¿½ (Card.OnMouseUp())
     public void destroyMe(int index)
     {
         PV.RPC("destroyCard", RpcTarget.AllBuffered, index);
     }
 
-    // ±â´É : Ä«µå Á¦°Å ±¸Çö
-    // ÂüÁ¶ : PlayerManager.destroyMe()
+    // ï¿½ï¿½ï¿½ : Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.destroyMe()
     [PunRPC] void destroyCard(int index)
     {
         if(!PV.IsMine){
@@ -109,7 +111,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // ÂüÁ¶ : PlayerManager.destroyCard()
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.destroyCard()
     IEnumerator cardflip(int num) {
         Sequence seq=DOTween.Sequence();
         GameObject card=enemyPlayerManager.myCardsGameObj[num];
@@ -125,7 +127,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         cardscript.effectTMP.text = cardscript.cardData.cardEffectInfoText;
     }
 
-    // ÂüÁ¶ : PlayerManager.destroyCard()
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.destroyCard()
     IEnumerator delay(int index) {
         yield return new WaitForSeconds(3f);
         Destroy(myCardsGameObj[index]);
@@ -138,8 +140,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         CardAlignment();
     }
 
-    // ±â´É : cardDataBuffer¿¡¼­ °¡Àå ¾Õ¿¡ ÀÖ´Â CardData¸¦ Á¦°ÅÇÏ¸é¼­ ¹ÝÈ¯ÇÔ (cardDataBuffer´Â ÀÌ¹Ì ¼ø¼­°¡ ¼¯ÀÎ »óÅÂ - ·£´ýÇÏ°Ô »Ì´Â È¿°ú)
-    // ÂüÁ¶ : PlayerManager.AddCard()
+    // ï¿½ï¿½ï¿½ : cardDataBufferï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½Ö´ï¿½ CardDataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½ï¿½È¯ï¿½ï¿½ (cardDataBufferï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ì´ï¿½ È¿ï¿½ï¿½)
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.AddCard()
     public CardData PopItem()
     {
         if(cardDataBuffer.Count==0)
@@ -150,17 +152,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         return item;
     }
 
-    // ±â´É : cardDataSO¿¡ ÀÖ´Â ¸ðµç itemµéÀ» °¡Á®¿Í¼­ cardDataBuffer¿¡ ÀúÀåÇÑµÚ, cardDataBuffer¿¡ ÀÖ´Â CardDataµéÀ» ¼¯À½
-    // ÂüÁ¶ : PlayerManager.Start()
+    // ï¿½ï¿½ï¿½ : cardDataSOï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ itemï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ cardDataBufferï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½, cardDataBufferï¿½ï¿½ ï¿½Ö´ï¿½ CardDataï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.Start()
     void SetupItemBuffer(){
         cardDataBuffer = new List<CardData>(100);
-        for(int i =0;i<cardDataSO.items.Length; i++)  // cardDataSO¿¡ ÀÖ´Â ¸ðµç itemµéÀ» °¡Á®¿Í¼­ cardDataBuffer¿¡ ÀúÀåÇÔ
+        for(int i =0;i<cardDataSO.items.Length; i++)  // cardDataSOï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ itemï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ cardDataBufferï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             CardData item = cardDataSO.items[i];
             cardDataBuffer.Add(item);
         }
 
-        for(int i =0;i<cardDataBuffer.Count;i++)  // ¼¯À½
+        for(int i =0;i<cardDataBuffer.Count;i++)  // ï¿½ï¿½ï¿½ï¿½
         {
             int rand = Random.Range(i,cardDataBuffer.Count);
             CardData temp = cardDataBuffer[i];
@@ -172,15 +174,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     int handcount = 0;
 
-    // ±â´É : Ä«µå¸¦ »ý¼ºÇÔ
-    // ÂüÁ¶ : PlayerManager.AddFiveCards()
+    // ï¿½ï¿½ï¿½ : Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.AddFiveCards()
     void AddCard()
     {
         if(PV.IsMine) 
         {
             var cardObject = Instantiate(cardPrefab,this.transform.position+new Vector3(30,20,0), Quaternion.identity);
             var card = cardObject.GetComponent<Card>();
-            card.myHandIndex = handcount; handcount++;  // Ä«µå¿¡ ¹øÈ£¸¦ ºÎ¿©ÇÔ
+            card.myHandIndex = handcount; handcount++;  // Ä«ï¿½å¿¡ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½ï¿½
             myCardsGameObj.Add(cardObject);
             card.Setup(PopItem(), PV.IsMine);
             myCards.Add(card);
@@ -223,8 +225,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         PV.RPC("CardAlignment", RpcTarget.AllBuffered);
     }
 
-    // ±â´É : Ä«µåµéÀ» ÀçÁ¤·ÄÇÔ
-    // ÂüÁ¶ : PlayerManager.destroyCard()
+    // ï¿½ï¿½ï¿½ : Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.destroyCard()
     [PunRPC] void CardAlignment()
     {
         float gap = myCardsRight.x - myCardsLeft.x;
@@ -244,14 +246,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // ÂüÁ¶ : PlayerManager.Start()
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.Start()
     [PunRPC]public void AddFiveCard()
     {
         StartCoroutine(AddFiveCards());
     }
 
-    // ±â´É : °ÔÀÓ¿¡¼­ »ç¿ëÇÒ 5°³ÀÇ Ä«µå¸¦ »ý¼ºÇÔ
-    // ÂüÁ¶ : PlayerManager.AddFiveCard()
+    // ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerManager.AddFiveCard()
     IEnumerator AddFiveCards()
     {
         AddCard();
@@ -267,19 +269,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
 
     [Header("Health Point")]
-    public int MyHP = 3;  // HP, ±âº»°ª 3
+    public int MyHP = 3;  // HP, ï¿½âº»ï¿½ï¿½ 3
     public GameObject hp1; public GameObject hp2; public GameObject hp3;
 
-    // ±â´É : µ¥¹ÌÁö¸¦ ÀÔÀ» ¶§ È£ÃâµÊ
-    // ÂüÁ¶ : GameManager.reNewalBoard()
+    // ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : GameManager.reNewalBoard()
     public void GetDamaged()
     {
         MyHP--;
         renewalHPBar();
     }
 
-    // ±â´É : HP »óÅÂ¿¡ µû¶ó HPBar°¡ º¸¿©Áö´Â ¸ð½ÀÀ» Á¶ÀýÇÔ
-    // ÂüÁ¶ : PlayerNamager.GetDamaged()
+    // ï¿½ï¿½ï¿½ : HP ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ HPBarï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : PlayerNamager.GetDamaged()
     void renewalHPBar()
     {
         if(MyHP==2) hp3.SetActive(false);
@@ -288,7 +290,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             hp3.SetActive(false); hp2.SetActive(false);
             hp1.SetActive(false);
-            if(PV.IsMine) GameManager.instance.LoseGame();  // HP°¡ ´Ù ¶³¾îÁö¸é °ÔÀÓ ÆÐ¹è
+            if(PV.IsMine) GameManager.instance.LoseGame();  // HPï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¹ï¿½
         }
     }
 
@@ -296,5 +298,5 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 }
 
 /*
- * PlayerManager ½ºÅ©¸³Æ®´Â ÃÑ 4°³°¡ Á¸ÀçÇÏ°Ô µÊ (PC1-A!,B, PC2-A,B!)
+ * PlayerManager ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ (PC1-A!,B, PC2-A,B!)
  */
