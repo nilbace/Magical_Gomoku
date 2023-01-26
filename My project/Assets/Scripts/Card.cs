@@ -8,13 +8,10 @@ using DG.Tweening;
 
 public class Card : MonoBehaviourPunCallbacks
 {
-    public TMP_Text nameTMP;  // 카드 이름
-    public TMP_Text effectTMP;  // 카드 효과
-    public SpriteRenderer characterSprite;  // 카드에 그려진 캐릭터
     public SpriteRenderer cardSprite;
     public bool isMine;
+    public Sprite cardFront;
     public Sprite cardBack;  // 카드 뒷면 sprite
-    public Sprite cardFront;  // 카드 앞면 sprite
 
     public CardData cardData;  // 이 카드의 정보
     public int myHandIndex = -1;  // 이 카드의, 게임 상의 순서 (인덱스 번호)
@@ -30,19 +27,15 @@ public class Card : MonoBehaviourPunCallbacks
     {
         this.cardData = cardData;
         this.isMine = isMine;
+        this.cardFront = cardData.sprite;
 
         if(this.isMine)  // 카드 앞면
         {
-            characterSprite.sprite = this.cardData.sprite;
-            nameTMP.text = this.cardData.name;
-            effectTMP.text = this.cardData.cardEffectInfoText;
+            cardSprite.sprite = this.cardData.sprite;
         }
         else  // 카드 뒷면
         {
-            cardSprite.sprite = cardBack;
-            nameTMP.text = "";
-            effectTMP.text = "";
-            characterSprite.sprite = null;   
+            cardSprite.sprite = cardBack; 
         }
     }
 
@@ -128,21 +121,20 @@ public class Card : MonoBehaviourPunCallbacks
     {
         if(isEnlarge)
         {
-            transform.localScale = new Vector2(2.69f, 2.69f);
+            transform.localScale = new Vector2(0.25f, 0.25f);
             if(transform.position.y+4.2f>=2.8f) {
-                transform.DOScale(new Vector3(6f,6f,0),0.25f);// 카드 크기를 키움
+                transform.DOScale(new Vector3(0.5f,0.5f,0),0.25f);// 카드 크기를 키움
             }  
         }
         else
         {
-            transform.localScale = new Vector2(2.09f, 2.09f);  // 카드 크기를 원래대로 되돌림
+            transform.localScale = new Vector2(0.2f, 0.2f);  // 카드 크기를 원래대로 되돌림
         }
     }
     
 
     int originOrder;
     public Renderer[] backRenderers;
-    public Renderer[] middleRenderers;
     public string sortingLayerName;
     public void SetoriginOrder(int originOrder)
     {
@@ -157,11 +149,6 @@ public class Card : MonoBehaviourPunCallbacks
         {
             renderer.sortingLayerName = sortingLayerName;
             renderer.sortingOrder = mulOrder;
-        }
-        foreach(var renderer in middleRenderers)
-        {
-            renderer.sortingLayerName=sortingLayerName;
-            renderer.sortingOrder=mulOrder+1;
         }
     }   
 

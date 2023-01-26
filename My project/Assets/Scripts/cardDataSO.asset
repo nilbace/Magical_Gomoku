@@ -15,37 +15,28 @@ MonoBehaviour:
   items:
   - name: "3*3\uB79C\uB364"
     indexNum: 0
-    cardEffectInfoText: "\uC9C0\uC815\uD55C \uBC94\uC704, \uC67C\uCABD,\uC544\uB798"
-    sprite: {fileID: 21300000, guid: 3894312b91e2cc34da08ff8c8b7e499e, type: 3}
+    sprite: {fileID: 21300000, guid: 97351697bc5b23d40a5c746491bb3673, type: 3}
   - name: "\uC138\uB85C\uC904\uC0AD\uC81C"
     indexNum: 1
-    cardEffectInfoText: "\uC138\uC904"
-    sprite: {fileID: 21300000, guid: e8502af20df1d5e428793fb1018950dd, type: 3}
+    sprite: {fileID: 21300000, guid: 2110c9e57f5042b47b055f7e92664a4f, type: 3}
   - name: "\uB3CC\uB450\uBC88\uB193\uAE30"
     indexNum: 2
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: 97dd2160d38d7ca4081b7f17564aac8b, type: 3}
+    sprite: {fileID: 21300000, guid: f007b538301bf984b937d33f7cc19507, type: 3}
   - name: "\uC0C1\uB300\uB3CC\uAD50\uCCB4"
     indexNum: 3
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: a6ba0a9830bad3d4796d12ef72252ce5, type: 3}
+    sprite: {fileID: 21300000, guid: f70189bcbc9814f47b21c85a8fb37b56, type: 3}
   - name: "2*2\uAD50\uCCB4"
     indexNum: 4
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: 6e97e20e9e8c53a4c933066d36333c09, type: 3}
+    sprite: {fileID: 21300000, guid: b6d1e99f3db5ac74699c6f19336812b4, type: 3}
   - name: "\uC624\uBAA9\uD310 \uB4A4\uC5CE\uAE30"
     indexNum: 5
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: 6cf4fcb5a9364c9479eb76576798512e, type: 3}
+    sprite: {fileID: 21300000, guid: 9714af2c23e5b8644a73575e9fc764a2, type: 3}
   - name: "\uC2ED\uC790\uAC00 \uC0AD\uC81C"
     indexNum: 6
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: 69b6b2c46f916904a9c60ace0e72d0b2, type: 3}
+    sprite: {fileID: 21300000, guid: c8120b0225618684fb9a1eee037f6435, type: 3}
   - name: "\uB3CC \uC704\uCE58 \uBCC0\uACBD"
     indexNum: 7
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: 1d1b00086f6dd334e82a36a89405e400, type: 3}
+    sprite: {fileID: 21300000, guid: 843f881259c4f2b4eb5546bebd174797, type: 3}
   - name: "\uC601\uC5ED \uAD50\uCCB4"
     indexNum: 8
-    cardEffectInfoText: 
-    sprite: {fileID: 21300000, guid: 19c11b5eed23c8e40810be56bccfa66f, type: 3}
+    sprite: {fileID: 21300000, guid: c59e0769f093bce4d9843c64135bbf64, type: 3}

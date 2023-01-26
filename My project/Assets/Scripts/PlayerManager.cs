@@ -117,14 +117,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         GameObject card=enemyPlayerManager.myCardsGameObj[num];
         Card cardscript=card.GetComponent<Card>();
         seq.Join(card.transform.DOMove(card.transform.position-new Vector3(0,5,0),0.75f).SetEase(Ease.OutQuad));
-        seq.Join(cardscript.nameTMP.transform.DORotate(new Vector3(0,180,0),0.1f));
-        seq.Join(cardscript.effectTMP.transform.DORotate(new Vector3(0,180,0),0.1f));
         seq.Append(card.transform.DORotate(new Vector3(0,180,0),0.5f));
-        yield return new WaitForSeconds(0.96f);
+        yield return new WaitForSeconds(0.95f);
+        card.GetComponent<SpriteRenderer>().flipX=true;
         card.GetComponent<SpriteRenderer>().sprite=cardscript.cardFront;
-        cardscript.characterSprite.sprite = cardscript.cardData.sprite;
-        cardscript.nameTMP.text = cardscript.cardData.name;
-        cardscript.effectTMP.text = cardscript.cardData.cardEffectInfoText;
     }
 
     // ���� : PlayerManager.destroyCard()

@@ -5,14 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class CardData
 {
-    public string name;  // Ä«µå ÀÌ¸§
-    public int indexNum;  // Ä«µå ÀÎµ¦½º ¹øÈ£
-    public string cardEffectInfoText;  // Ä«µå È¿°ú
+    public string name;  // Ä«ï¿½ï¿½ ï¿½Ì¸ï¿½
+    public int indexNum;  // Ä«ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½È£
     public Sprite sprite;  // sprite
 }
 
-// ½ºÅ©¸³ÅÍºí ¿ÀºêÁ§Æ® (Scriptable Object)
+// ï¿½ï¿½Å©ï¿½ï¿½ï¿½Íºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® (Scriptable Object)
 [CreateAssetMenu(fileName = "cardDataSO", menuName = "Scriptable Object/cardDataSO", order = 0)]
 public class cardDataSO : ScriptableObject {
-    public CardData[] items;  // Ä«µå µ¥ÀÌÅÍµéÀÇ ¹è¿­
+    public CardData[] items;  // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ ï¿½è¿­
 }
