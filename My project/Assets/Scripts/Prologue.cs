@@ -16,7 +16,7 @@ public class Prologue : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        setResolution();  // ÇØ»óµµ ¼³Á¤
+        setResolution();  // ï¿½Ø»ï¿½ ï¿½ï¿½ï¿½ï¿½
         LoadPlayerDatafromJson();
         if (playerData.playeraHasPlayedTuitorial)
             SceneManager.LoadScene("Start");
@@ -33,15 +33,12 @@ public class Prologue : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            time = 0f;
-        }
-
-        if (time >= 2f)
-        {
-            time = 0f;
-
-            GoNext();
-        }    
+            if(time > 1.0f)
+            {
+                GoNext();
+                print(time);time = 0;
+            }
+        }   
     }
 
     void disableAllPannels()
@@ -50,12 +47,8 @@ public class Prologue : MonoBehaviour
             image_list[i].SetActive(false);
     }
 
-    private void OnMouseDown()
-    {
-        GoNext();
-    }
 
-    // ±â´É : ´ÙÀ½ ÀÌ¹ÌÁö³ª ¸ÞÀÎ °ÔÀÓ ¾ÀÀ¸·Î ³Ñ¾î°¡°Ô ÇÔ
+    // ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ ï¿½ï¿½
     void GoNext()
     {
         if (num < 14)
@@ -98,7 +91,7 @@ public class Prologue : MonoBehaviour
     }
 
 
-    // ±â´É : ÇÃ·¹ÀÌ¾îÀÇ µ¥ÀÌÅÍ¸¦ json ÆÄÀÏ¿¡ ÀúÀåÇÔ
+    // ï¿½ï¿½ï¿½ : ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ json ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [ContextMenu("To Json Data")]
     public void SavePlayerDataToJson()
     {
@@ -115,7 +108,7 @@ public class Prologue : MonoBehaviour
         File.WriteAllText(path, jsonData);
     }
 
-    // ±â´É : json ÆÄÀÏ·ÎºÎÅÍ ÇÃ·¹ÀÌ¾îÀÇ µ¥ÀÌÅÍ¸¦ °¡Á®¿È
+    // ï¿½ï¿½ï¿½ : json ï¿½ï¿½ï¿½Ï·Îºï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public void LoadPlayerDatafromJson()
     {
         string path;
@@ -132,30 +125,30 @@ public class Prologue : MonoBehaviour
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
     }
 
-    // ±â´É : ÇØ»óµµ¸¦ Ç×»ó 1920*1080 (16:9)·Î °íÁ¤ÇÔ
-    // ÂüÁ¶ : NetWorkManager.Start()
-    public void setResolution()  // ÇØ»óµµ 16:9 °íÁ¤
+    // ï¿½ï¿½ï¿½ : ï¿½Ø»óµµ¸ï¿½ ï¿½×»ï¿½ 1920*1080 (16:9)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ : NetWorkManager.Start()
+    public void setResolution()  // ï¿½Ø»ï¿½ 16:9 ï¿½ï¿½ï¿½ï¿½
     {
-        int setWidth = 1080; // »ç¿ëÀÚ ¼³Á¤ ³Êºñ
-        int setHeight = 1920; // »ç¿ëÀÚ ¼³Á¤ ³ôÀÌ
+        int setWidth = 1080; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Êºï¿½
+        int setHeight = 1920; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        int deviceWidth = Screen.width; // ±â±â ³Êºñ ÀúÀå
-        int deviceHeight = Screen.height; // ±â±â ³ôÀÌ ÀúÀå
+        int deviceWidth = Screen.width; // ï¿½ï¿½ï¿½ ï¿½Êºï¿½ ï¿½ï¿½ï¿½ï¿½
+        int deviceHeight = Screen.height; // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWidth) * setWidth), true); // SetResolution ÇÔ¼ö Á¦´ë·Î »ç¿ëÇÏ±â
+        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWidth) * setWidth), true); // SetResolution ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 
-        if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // ±â±âÀÇ ÇØ»óµµ ºñ°¡ ´õ Å« °æ¿ì
+        if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø»ï¿½ ï¿½ï¿½ ï¿½ï¿½ Å« ï¿½ï¿½ï¿½
         {
-            float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // »õ·Î¿î ³Êºñ
-            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // »õ·Î¿î Rect Àû¿ë
+            float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Êºï¿½
+            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // ï¿½ï¿½ï¿½Î¿ï¿½ Rect ï¿½ï¿½ï¿½ï¿½
 
         }
-        else // °ÔÀÓÀÇ ÇØ»óµµ ºñ°¡ ´õ Å« °æ¿ì
+        else // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø»ï¿½ ï¿½ï¿½ ï¿½ï¿½ Å« ï¿½ï¿½ï¿½
         {
-            float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // »õ·Î¿î ³ôÀÌ
-            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // »õ·Î¿î Rect Àû¿ë
+            float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // ï¿½ï¿½ï¿½Î¿ï¿½ Rect ï¿½ï¿½ï¿½ï¿½
         }
 
-        void OnPreCull() => GL.Clear(true, true, Color.black);  // ³²´Â ¿©¹éÀ» ¸ðµÎ °ËÁ¤»öÀ¸·Î Ã¤¿ò
+        void OnPreCull() => GL.Clear(true, true, Color.black);  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½
     }
 }
