@@ -16,19 +16,19 @@ using System;
 public class NetWorkManager : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
-    public static NetWorkManager instance = null; 
-    
+    public static NetWorkManager instance = null;
+
     public Image background;
     public Sprite bg1;
     public Sprite bg2;
     public Sprite bg3;
-    public Sprite bg4;  
+    public Sprite bg4;
 
     private void Awake() // 싱글턴
     {
-        instance=this;
+        instance = this;
     }
-    
+
     [Header("Setting")]
     public GameObject SettingPannel;  // 설정패널
     public TMP_InputField changenameInputfield;  // 설정패널 - 이름 입력 필드
@@ -60,12 +60,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public Slider masterslid;
     public Slider bgmslid;
     public Slider sfxslid;
-  
+
     void Update()
-    {   
-        if(AlreadyLobbyed)
+    {
+        if (AlreadyLobbyed)
         {
-            if(!PhotonNetwork.InLobby && !PhotonNetwork.InRoom)
+            if (!PhotonNetwork.InLobby && !PhotonNetwork.InRoom)
             {
                 PhotonNetwork.JoinLobby();
             }
@@ -75,7 +75,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         {
             if (Input.GetKey(KeyCode.Escape))  // 뒤로 가기 버튼 처리
             {
-                HandlingBackButton(); 
+                HandlingBackButton();
             }
         }
     }
@@ -83,7 +83,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     #region 세팅화면
     public void closeSettingPannel()  // 일시정지로 돌아가지 않아도 되면 (스타트화면에서 환경설정을 연 경우)
     {
-        if(returntoPause == false)
+        if (returntoPause == false)
         {
             closeAllPannel();
             StartPannel.SetActive(true);  // 모든 패널을 닫고 스타트화면만 활성화함
@@ -100,8 +100,10 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     public void prologueReview()
     {
-        printScreenString("미구현");
+        playerData.playeraHasPlayedTuitorial = false;
+        SavePlayerDataToJson();
 
+        SceneManager.LoadScene("Prologue");
     }
 
     public void howToPlayReview()
@@ -124,41 +126,41 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
 
     #region 스타트 화면
-    
+
     void Start()
     {
         setResolution();  // 해상도 설정
         PhotonNetwork.ConnectUsingSettings();
-        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable=false; dunguldisable();  // 스타트화면만 활성화함
+        closeAllPannel(); StartPannel.SetActive(true); gotoSchoolBTN.interactable = false; dunguldisable();  // 스타트화면만 활성화함
         LoadPlayerDatafromJson();  // json 파일로부터 플레이어 데이터를 가져옴
 
-        masterslid.value=playerData.mastervol;
-        sfxslid.value=playerData.sfxvol;
-        bgmslid.value=playerData.bgmvol;
+        masterslid.value = playerData.mastervol;
+        sfxslid.value = playerData.sfxvol;
+        bgmslid.value = playerData.bgmvol;
     }
-    
+
     public GameObject dungul;
     public void dunguldown() {
-        var img=dungul.GetComponent<Image>();
-        img.color=new Color(0.7843137f, 0.7843137f, 0.7843137f,1);
+        var img = dungul.GetComponent<Image>();
+        img.color = new Color(0.7843137f, 0.7843137f, 0.7843137f, 1);
     }
 
     public void dungulup() {
-        var img=dungul.GetComponent<Image>();
-        img.color=new Color(1, 1, 1,1);
+        var img = dungul.GetComponent<Image>();
+        img.color = new Color(1, 1, 1, 1);
     }
 
     void dunguldisable() {
-        var img=dungul.GetComponent<Image>();
-        img.color=new Color(0.7843137f, 0.7843137f, 0.7843137f,0.5019f);
+        var img = dungul.GetComponent<Image>();
+        img.color = new Color(0.7843137f, 0.7843137f, 0.7843137f, 0.5019f);
     }
 
     public int checkbug;
 
     void changebg() {
         print(checkbug); checkbug++;
-        Image img=background;
-        if (StartPannel.activeSelf == true) img.sprite = bg1;
+        Image img = background;
+        if (StartPannel.activeSelf == true || staffPannel.activeSelf == true) img.sprite = bg1;
         else if (LobbyPannel.activeSelf == true) img.sprite = bg3;
         else if (GamePannel.activeSelf == true) img.sprite = bg4;
         else img.sprite = bg2;
@@ -211,6 +213,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 스타트화면 -> '제작진' 버튼의 이벤트 함수
     public void productionStaffBTN() 
     {
+        closeAllPannel();
+
         staffPannel.SetActive(true);
 
         changebg();
@@ -477,9 +481,11 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 참조 : NetWorkManager.Update()
     void HandlingBackButton()
     {
-        if (StartPannel.activeSelf == true && staffPannel.activeSelf == true)
+        if (staffPannel.activeSelf == true)
         {
             staffPannel.SetActive(false);
+            StartPannel.SetActive(true);
+            changebg();
         }
         else if (SettingPannel.activeSelf == true)  // 설정 패널 열려있음
         {
@@ -573,7 +579,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 public class PlayerData
 {
     public string name;  // 이름 (닉네임)
-    public bool playeraHasPlayedTuitorial = false;  // 튜토리얼을 봤는지 여부
+    public bool playeraHasPlayedTuitorial;  // 튜토리얼을 봤는지 여부
     public float mastervol;
     public float sfxvol;
     public float bgmvol;
@@ -583,6 +589,4 @@ public class PlayerData
  * 환경 설정을 열 수 있는 경우가 2가지 존재
     (1) 스타트 화면에서
     (2) 게임 중에 (일시정지버튼을 누르고 난 뒤)
- * 
- * 
  */ 
