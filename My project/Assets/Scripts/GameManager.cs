@@ -43,7 +43,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public bool canuseCard;  // 카드를 드래그했을때 써지는지 여부 금방금방 꺼짐
     
-
+    private void Start() {
+        startRoom();
+    }
     public void startRoom()
     {
         resetGameData();  // 게임 데이터 초기화 (돌, 나와 상대방 PlayerManager)

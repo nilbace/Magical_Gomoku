@@ -33,7 +33,7 @@ public class Prologue : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if(time > 1.0f)
+            if(time > 0.3f)
             {
                 GoNext();
                 print(time);time = 0;

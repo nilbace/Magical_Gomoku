@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7477965516789372613}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.87, z: 0}
-  m_LocalScale: {x: 5.0995398, y: 1.1011547, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.35567904, y: 0.26227316, z: 0.61109}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7249383016046239611}
@@ -75,8 +75,8 @@ SpriteRenderer:
   m_SortingLayerID: 230966913
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.8862745}
+  m_Sprite: {fileID: 21300000, guid: bb81ec6e905db034da2018599c5a88ea, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8862745}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -126,7 +126,7 @@ RectTransform:
   m_GameObject: {fileID: 8690421755498972403}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.054245, y: 0.2257948, z: 0.054245}
+  m_LocalScale: {x: 0.019371845, y: 0.025587277, z: 0.054245}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3612764656054451956}
@@ -134,8 +134,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.005, y: -0.04}
-  m_SizeDelta: {x: 17.80262, y: 4.433}
+  m_AnchoredPosition: {x: 0, y: 0.259}
+  m_SizeDelta: {x: 1263.259, y: 101.365}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1494476203418442760
 MeshRenderer:
@@ -157,7 +157,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 3474851963845200210, guid: 6077bf6cdd7a91a4ca3f404ffd48515b, type: 2}
+  - {fileID: -3345219437094877147, guid: 51353e82b68447f428e8d170d5691111, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -199,17 +199,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uCD5C\uB30011\uAE00\uC790\uAE4C\uC9C0\uB429\uB2C8\uB2E4\uC544"
+  m_text: "\uB098\uC758 \uD134"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6077bf6cdd7a91a4ca3f404ffd48515b, type: 2}
-  m_sharedMaterial: {fileID: 3474851963845200210, guid: 6077bf6cdd7a91a4ca3f404ffd48515b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 51353e82b68447f428e8d170d5691111, type: 2}
+  m_sharedMaterial: {fileID: -3345219437094877147, guid: 51353e82b68447f428e8d170d5691111, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281704908
+  m_fontColor: {r: 0.8018868, g: 0.630753, b: 0.20803669, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -226,8 +226,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.54
-  m_fontSizeBase: 15.54
+  m_fontSize: 937.9
+  m_fontSizeBase: 937.9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
