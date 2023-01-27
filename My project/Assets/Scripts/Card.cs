@@ -121,14 +121,14 @@ public class Card : MonoBehaviourPunCallbacks
     {
         if(isEnlarge)
         {
-            transform.localScale = new Vector2(0.25f, 0.25f);
+            transform.localScale = new Vector2(0.15f, 0.15f);
             if(transform.position.y+4.2f>=2.8f) {
                 transform.DOScale(new Vector3(0.5f,0.5f,0),0.25f);// 카드 크기를 키움
             }  
         }
         else
         {
-            transform.localScale = new Vector2(0.2f, 0.2f);  // 카드 크기를 원래대로 되돌림
+            transform.localScale = new Vector2(0.1f, 0.1f);  // 카드 크기를 원래대로 되돌림
         }
     }
     

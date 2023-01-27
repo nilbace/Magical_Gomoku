@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [PunRPC] void timermake() {
         if(timerins!=null) Destroy(timerins);
-        timerins=Instantiate(timer, new Vector3(-50,580,10), Quaternion.identity);
+        timerins=Instantiate(timer, new Vector3(-400,830,10), Quaternion.identity);
         timerins.transform.SetParent(this.transform.parent.transform,false);
         time=0;
     }

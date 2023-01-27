@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5364840912449116237}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.447, y: -4.26, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -49,7 +49,7 @@ MonoBehaviour:
   cardSprite: {fileID: 5364840912449116242}
   isMine: 1
   cardFront: {fileID: 21300000, guid: af2222cfb83c49e429e18170b555f5b6, type: 3}
-  cardBack: {fileID: 21300000, guid: cf4dd1150d876e84da06cc66b66f6c48, type: 3}
+  cardBack: {fileID: 21300000, guid: 544903c78d077e74daa809bb8766bfde, type: 3}
   cardData:
     name: 
     indexNum: 0
