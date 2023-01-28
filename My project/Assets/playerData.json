@@ -1,6 +1,7 @@
 {
-    "name": "bn",
+    "name": "siewoo",
     "playeraHasPlayedTuitorial": false,
+    "isNotFirst": false,
     "mastervol": 0.3981146216392517,
     "sfxvol": 0.7897623777389526,
     "bgmvol": 0.6055391430854797

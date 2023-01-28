@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     // 싱글턴
     public static GameManager instance;
     private void Awake() {
+        DontDestroyOnLoad(this.gameObject);
         instance = this;
     }
 

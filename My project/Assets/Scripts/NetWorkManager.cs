@@ -26,12 +26,14 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     private void Awake() // 싱글턴
     {
+        DontDestroyOnLoad(this.gameObject);
         instance = this;
     }
 
     [Header("Setting")]
     public GameObject SettingPannel;  // 설정패널
     public TMP_InputField changenameInputfield;  // 설정패널 - 이름 입력 필드
+    public GameObject GameExplainPannel;
 
     [Header("Start")]
     public GameObject StartPannel;  // 스타트화면
@@ -95,21 +97,21 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             pausePannel.SetActive(true);
             returntoPause = false;
         }
-
     }
 
     public void prologueReview()
     {
         playerData.playeraHasPlayedTuitorial = false;
         SavePlayerDataToJson();
-
+       
         SceneManager.LoadScene("Prologue");
     }
-
+    
     public void howToPlayReview()
     {
-        printScreenString("미구현");
-
+        closeAllPannel();
+        GameExplainPannel.SetActive(true);
+        changebg();
     }
 
     // 플레이어의 이름을 변경하고 Json 데이터로 저장함
@@ -503,6 +505,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         {
             toStartPannelBTN();
         }
+        else if (GameExplainPannel.activeSelf == true)
+        {
+            GameExplainPannel.SetActive(false);
+            SettingPannel.SetActive(true);
+            changebg();
+        }
         else if (GamePannel.activeSelf == true && pausePannel.activeSelf == false)
         {  // 게임패널만 열려있음 (일시정지가 아닌 경우)
             PauseBTN();
@@ -580,6 +588,7 @@ public class PlayerData
 {
     public string name;  // 이름 (닉네임)
     public bool playeraHasPlayedTuitorial;  // 튜토리얼을 봤는지 여부
+    public bool isNotFirst;
     public float mastervol;
     public float sfxvol;
     public float bgmvol;
