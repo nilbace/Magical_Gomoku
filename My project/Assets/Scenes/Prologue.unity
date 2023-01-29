@@ -1550,7 +1550,7 @@ MonoBehaviour:
   - {fileID: 371635278}
   - {fileID: 911125920}
   playerData:
-    name: 
+    name: siewoo
     playeraHasPlayedTuitorial: 0
     isNotFirst: 0
     mastervol: 0
@@ -1558,6 +1558,9 @@ MonoBehaviour:
     bgmvol: 0
   CharacterExplain: {fileID: 424702013}
   GameExplain: {fileID: 401796915}
+  test: {fileID: 0}
+  test2: {fileID: 0}
+  test3: {fileID: 0}
 --- !u!1 &600725028
 GameObject:
   m_ObjectHideFlags: 0

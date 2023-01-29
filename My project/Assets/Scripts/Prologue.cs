@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Text;
 using UnityEngine.UI;
 using TMPro;
 
@@ -24,7 +25,7 @@ public class Prologue : MonoBehaviour
     public GameObject GameExplain;
     bool isCharacterExplain = false;
     bool truckWait = false;
-
+    bool isNotFirst;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,8 @@ public class Prologue : MonoBehaviour
             SceneManager.LoadScene("Start");
         else
             num = 0;
+
+        isNotFirst = playerData.isNotFirst;
 
         disableAllPannels();
     }
@@ -66,8 +69,7 @@ public class Prologue : MonoBehaviour
 
         }
 
-
-        if (!playerData.isNotFirst)
+        if (!isNotFirst)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -143,13 +145,26 @@ public class Prologue : MonoBehaviour
             for (int i = 12; i < 14; i++)
                 image_list[i].SetActive(false);
 
-            playerData.playeraHasPlayedTuitorial = true;
-            SavePlayerDataToJson();
-
-            if (!playerData.isNotFirst)
+            if (!isNotFirst)
+            {
                 CharacterExplain.SetActive(true);
+
+                playerData.name = "test";
+                playerData.playeraHasPlayedTuitorial = true;
+                playerData.isNotFirst = true;
+                playerData.mastervol = 1f;
+                playerData.sfxvol = 1f;
+                playerData.bgmvol = 1f;
+
+                SavePlayerDataToJson();
+            }
             else
+            {
+                playerData.playeraHasPlayedTuitorial = true;
+                SavePlayerDataToJson();
+
                 SceneManager.LoadScene("Start");
+            }
         }
     }
 
@@ -167,7 +182,11 @@ public class Prologue : MonoBehaviour
             path = Path.Combine(Application.dataPath, "playerData.json");
         }
         string jsonData = JsonUtility.ToJson(playerData, true);
-        File.WriteAllText(path, jsonData);
+
+        FileStream fileStream = new FileStream(path, FileMode.Create);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        fileStream.Write(data, 0, data.Length);
+        fileStream.Close();
     }
 
     public void LoadPlayerDatafromJson()
@@ -182,7 +201,12 @@ public class Prologue : MonoBehaviour
             path = Path.Combine(Application.dataPath, "playerData.json");
         }
 
-        string jsonData = File.ReadAllText(path);
+        FileStream fileStream = new FileStream(path, FileMode.Open);
+        byte[] data = new byte[fileStream.Length];
+        fileStream.Read(data, 0, data.Length);
+        fileStream.Close();
+        string jsonData = Encoding.UTF8.GetString(data);
+
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
     }
 

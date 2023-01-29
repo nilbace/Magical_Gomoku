@@ -9,6 +9,8 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using System.IO;
 using System;
+using System.Text;
+// using static System.Net.Mime.MediaTypeNames;
 
 
 // 네트워크 매니저 및 UI 매니저
@@ -431,7 +433,11 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             path = Path.Combine(Application.dataPath, "playerData.json");
         }
         string jsonData = JsonUtility.ToJson(playerData, true);
-        File.WriteAllText(path, jsonData);
+
+        FileStream fileStream = new FileStream(path, FileMode.Create);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        fileStream.Write(data, 0, data.Length);
+        fileStream.Close();
     }
 
     // 기능 : json 파일로부터 플레이어의 데이터를 가져옴
@@ -448,7 +454,12 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
             path = Path.Combine(Application.dataPath, "playerData.json");
         }
 
-        string jsonData = File.ReadAllText(path);
+        FileStream fileStream = new FileStream(path, FileMode.Open);
+        byte[] data = new byte[fileStream.Length];
+        fileStream.Read(data, 0, data.Length);
+        fileStream.Close();
+        string jsonData = Encoding.UTF8.GetString(data);
+
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
     }
 
