@@ -96,6 +96,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // ���� : PlayerManager.destroyMe()
     [PunRPC] void destroyCard(int index)
     {
+        audioSource.Play();
         if(!PV.IsMine){
             StartCoroutine(cardflip(index));
             StartCoroutine(delay(index));}
@@ -192,8 +193,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             card.Setup(PopItem(), PV.IsMine);
             myCards.Add(card);
         }
-
-        audioSource.Play();
         SetOriginOrder();
         CardAlignment();
     }

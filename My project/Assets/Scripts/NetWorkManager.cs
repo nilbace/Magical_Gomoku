@@ -570,6 +570,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     {
         PlayerManager.myPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.myPlayerManager.drawimg;
         PlayerManager.myPlayerManager.drawready=true;
+        this.gameObject.GetComponent<AudioSource>().Play();
         PV.RPC("drawsyncro", RpcTarget.OthersBuffered);
         if(PlayerManager.myPlayerManager.drawready==true && PlayerManager.enemyPlayerManager.drawready==true) GameManager.instance.draw();
         
@@ -577,6 +578,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC] void drawsyncro() {
+        this.gameObject.GetComponent<AudioSource>().Play();
         PlayerManager.enemyPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.enemyPlayerManager.drawimg;
         PlayerManager.enemyPlayerManager.drawready=true;
     }
@@ -585,6 +587,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 참조 : GameManager.BackToLobby()
     public void EndGame()
     {
+        this.gameObject.GetComponent<AudioSource>().Stop();
         closeAllPannel();
         LobbyPannel.SetActive(true);  // 모든 패널을 끄고 로비 패널만 활성화함
         PhotonNetwork.LeaveRoom();

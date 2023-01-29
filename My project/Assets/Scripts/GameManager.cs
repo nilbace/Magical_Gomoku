@@ -1234,14 +1234,15 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             resultBg.sprite = winImage;
             ResultTMP.text = "";  // 임시
+            ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
+            ResultPannel.gameObject.GetComponent<AudioSource>().Play();
         }
         else
         {
             resultBg.sprite = null;
+            ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
+            ResultTMP.gameObject.GetComponent<AudioSource>().Play();
         }
-
-
-        ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
         StartCoroutine(BackToLobby());
     }
 
@@ -1249,7 +1250,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     // 참조 : GameManager.GameOver()
     IEnumerator BackToLobby()
     {
-        yield return new WaitForSeconds(2f);  // 2초를 기다림
+        yield return new WaitForSeconds(3f);  // 3초를 기다림
         resetGameData();
         NetWorkManager.instance.EndGame();
         ResultPannel.SetActive(false);  // 게임 결과 패널 비활성화

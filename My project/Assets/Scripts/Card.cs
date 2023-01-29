@@ -43,6 +43,7 @@ public class Card : MonoBehaviourPunCallbacks
     private void OnMouseOver() {
         if(isMine)  // 내 카드만 조작할 수 있게 함
         {
+            this.gameObject.GetComponent<AudioSource>().Play();
             bool enlarge = true;
             EnlargeCard(enlarge);
         }
