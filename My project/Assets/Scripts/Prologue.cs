@@ -66,7 +66,7 @@ public class Prologue : MonoBehaviour
                     print(time); time = 0;
                 }
             }
-
+            this.gameObject.GetComponent<AudioSource>().Play();
         }
 
         if (!isNotFirst)

@@ -501,7 +501,7 @@ MonoBehaviour:
   drawready: 0
   drawimg: {fileID: 21300000, guid: b558742e21094dc4ba35dd8805d2b1f1, type: 3}
   character_img: {fileID: 6086542188442052541}
-  omokman: {fileID: 21300000, guid: 02333ab89eee4fa43aebbadea510bc9b, type: 3}
+  omokman: {fileID: 21300000, guid: 10a64adc5a1ba4a44b6cddc8d647a191, type: 3}
   MyHP: 3
   hp1: {fileID: 3746915193662516254}
   hp2: {fileID: 4974458439405721167}
@@ -676,7 +676,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e44e90693f2f937489a4f20a8dacdcae, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4fde5c7ca4889d344aed11fe206bdcbe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -698,8 +698,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5.4077854, y: 7.0107646, z: 0.19999999}
-  m_Center: {x: -0.17679237, y: -0.22315714, z: 0}
+  m_Size: {x: 5.4077854, y: 6.1777062, z: 0.19999999}
+  m_Center: {x: -0.17679237, y: -0.16882662, z: 0}
 --- !u!1 &6113566508055852140
 GameObject:
   m_ObjectHideFlags: 0

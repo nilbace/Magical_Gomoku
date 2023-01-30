@@ -63,8 +63,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         else
         {
             transform.position = new Vector3(2f,3.5f,80);
-            myCardsLeft = new Vector3(-2f,3.1f,0);
-            myCardsRight = new Vector3(1f,3.1f,0);
+            myCardsLeft = new Vector3(-2f,3.3f,0);
+            myCardsRight = new Vector3(1f,3.3f,0);
 
         }
     }

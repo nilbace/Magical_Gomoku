@@ -15,7 +15,7 @@ public class Card : MonoBehaviourPunCallbacks
 
     public CardData cardData;  // 이 카드의 정보
     public int myHandIndex = -1;  // 이 카드의, 게임 상의 순서 (인덱스 번호)
-
+    AudioSource sfx;
     Vector3 originPos;  // 이 카드의 원래 위치 (아무 동작도 하지 않으면 카드 5개가 게임 하단, 캐릭터 우측에 배치되어있음)
     Vector3 offset;
 
@@ -28,6 +28,7 @@ public class Card : MonoBehaviourPunCallbacks
         this.cardData = cardData;
         this.isMine = isMine;
         this.cardFront = cardData.sprite;
+        sfx=this.gameObject.GetComponent<AudioSource>();
 
         if(this.isMine)  // 카드 앞면
         {
@@ -43,7 +44,7 @@ public class Card : MonoBehaviourPunCallbacks
     private void OnMouseOver() {
         if(isMine)  // 내 카드만 조작할 수 있게 함
         {
-            this.gameObject.GetComponent<AudioSource>().Play();
+            sfx.Play();
             bool enlarge = true;
             EnlargeCard(enlarge);
         }
