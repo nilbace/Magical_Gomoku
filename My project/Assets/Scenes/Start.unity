@@ -7239,7 +7239,7 @@ MonoBehaviour:
   sfxslid: {fileID: 1400245041}
   dungul: {fileID: 1596964794}
   checkbug: 0
-  WarningText: {fileID: 7477965516789372613, guid: e41270af24f846f4285a819b49c4458d, type: 3}
+  WarningText: {fileID: 3366380305180325431, guid: e41270af24f846f4285a819b49c4458d, type: 3}
   playerData:
     name: JinTae
     playeraHasPlayedTuitorial: 0

@@ -401,7 +401,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 기능 : 화면에 텍스트를 출력하고 1초 뒤 없앰
     IEnumerator printString(string str)
     {
-        var textInfo = Instantiate(WarningText);
+        var textInfo = Instantiate(WarningText, new Vector3(0,-550,0), Quaternion.identity);
+        textInfo.transform.SetParent(GamePannel.transform.parent.transform,false);
         var text = textInfo.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
         text.text = str;
         yield return new WaitForSeconds(1f);
