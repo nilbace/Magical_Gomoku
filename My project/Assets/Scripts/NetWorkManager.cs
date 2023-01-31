@@ -67,6 +67,13 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
+        print(PhotonNetwork.NetworkClientState.ToString());
+        if(StartPannel.activeSelf && PhotonNetwork.IsConnected)
+        {
+            gotoSchoolBTN.interactable = true;
+            dungulup();
+        }
+
         if (AlreadyLobbyed)
         {
             if (!PhotonNetwork.InLobby && !PhotonNetwork.InRoom)
@@ -172,7 +179,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        gotoSchoolBTN.interactable=true; dungulup();
+        dungulup();
         PhotonNetwork.LocalPlayer.NickName = playerData.name;
         if(AlreadyLobbyed)
         {
