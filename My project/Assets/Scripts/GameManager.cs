@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public GameObject ResultPannelBg;
     public Sprite winImage;
+    public Sprite DrawImage;
+    public Sprite LoseImage;
 
     
     enum stoneColor{ black = 1, white = 2 }
@@ -1237,10 +1239,18 @@ public class GameManager : MonoBehaviourPunCallbacks
             ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
             ResultPannel.gameObject.GetComponent<AudioSource>().Play();
         }
+        else if(result == "무승부")
+        {
+            resultBg.sprite = DrawImage;
+            ResultTMP.text = ""; 
+            ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
+            ResultPannel.gameObject.GetComponent<AudioSource>().Play();
+        }
         else
         {
-            resultBg.sprite = null;
-            ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
+            resultBg.sprite = LoseImage;
+            ResultTMP.text = ""; 
+            ResultPannel.SetActive(true);
             ResultTMP.gameObject.GetComponent<AudioSource>().Play();
         }
         StartCoroutine(BackToLobby());
