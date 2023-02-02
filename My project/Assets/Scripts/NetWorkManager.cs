@@ -67,7 +67,6 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        print(PhotonNetwork.NetworkClientState.ToString());
         if(StartPannel.activeSelf && PhotonNetwork.IsConnected)
         {
             gotoSchoolBTN.interactable = true;
@@ -84,7 +83,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
 
         if (Application.platform == RuntimePlatform.Android)   // 플랫폼이 안드로이드이면
         {
-            if (Input.GetKey(KeyCode.Escape))  // 뒤로 가기 버튼 처리
+            if (Input.GetKeyDown(KeyCode.Escape))  // 뒤로 가기 버튼 처리
             {
                 HandlingBackButton();
             }
@@ -166,10 +165,8 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         img.color = new Color(0.7843137f, 0.7843137f, 0.7843137f, 0.5019f);
     }
 
-    public int checkbug;
 
     void changebg() {
-        print(checkbug); checkbug++;
         Image img = background;
         if (StartPannel.activeSelf == true || staffPannel.activeSelf == true) img.sprite = bg1;
         else if (LobbyPannel.activeSelf == true) img.sprite = bg3;
