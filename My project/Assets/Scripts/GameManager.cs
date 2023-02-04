@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     void Update() {
         if(timeron) {
             time+=Time.deltaTime;
-            if(time>=60) {
+            if(time>=30) {
                 if(PV.IsMine) endMyTurn();
             }
         }
@@ -111,8 +111,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [PunRPC] void timermake() {
         if(timerins!=null) Destroy(timerins);
-        timerins=Instantiate(timer, new Vector3(-400,830,10), Quaternion.identity);
-        timerins.transform.SetParent(this.transform.parent.transform,false);
+        if(isMyTurn) {
+            timerins=Instantiate(timer, new Vector3(-150,-550,10), Quaternion.identity);
+            timerins.transform.SetParent(this.transform.parent.transform,false);
+        }
+        else {
+            timerins=Instantiate(timer, new Vector3(-400,830,10), Quaternion.identity);
+            timerins.transform.SetParent(this.transform.parent.transform,false);
+        }
         time=0;
     }
 
@@ -123,6 +129,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         isMyTurn = false;
         canuseCard = false;  // 나의 턴을 끝내고 카드를 사용할 수 없게 함
+        myHandStatus = MyHandStatus.cannotUseCard;
+        moveAreaBox(new Vector3(10, 10, 0));
+        moveAreaBoxPlus(new Vector3(12, 10, 0));
         for (int i = 0; i < 81; i++)   // 모든 버튼을 클릭할 수 없게 함
         {
             gomokuTable[i].interactable=false;
@@ -1244,6 +1253,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             resultBg.sprite = DrawImage;
             ResultTMP.text = ""; 
             ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
+            NetWorkManager.instance.GamePannel.GetComponent<AudioSource>().Stop();
             ResultPannel.gameObject.GetComponent<AudioSource>().Play();
         }
         else
@@ -1251,6 +1261,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             resultBg.sprite = LoseImage;
             ResultTMP.text = ""; 
             ResultPannel.SetActive(true);
+            NetWorkManager.instance.GamePannel.GetComponent<AudioSource>().Stop();
             ResultTMP.gameObject.GetComponent<AudioSource>().Play();
         }
         StartCoroutine(BackToLobby());

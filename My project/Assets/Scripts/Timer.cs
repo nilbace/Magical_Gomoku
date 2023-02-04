@@ -16,8 +16,8 @@ public class Timer : MonoBehaviour
     void Update()
     {
         //30초에 한바퀴
-        transform.Rotate(Vector3.back*Time.deltaTime*6);
-        img.fillAmount = (time / 60);
+        transform.Rotate(Vector3.back*Time.deltaTime*12);
+        img.fillAmount = (time / 30);
         //시간체크용 인스펙터
         time += Time.deltaTime;
     }

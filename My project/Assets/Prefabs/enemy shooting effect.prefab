@@ -53479,5 +53479,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e56f4cb8937e1244b937d2a4255b56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {x: -2, y: 3.8, z: 80}
+  target: {x: 2, y: 3.5, z: 80}
   speed: 5

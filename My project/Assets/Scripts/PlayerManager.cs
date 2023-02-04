@@ -117,11 +117,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         Sequence seq=DOTween.Sequence();
         GameObject card=enemyPlayerManager.myCardsGameObj[num];
         Card cardscript=card.GetComponent<Card>();
-        seq.Join(card.transform.DOMove(card.transform.position-new Vector3(0,5,0),0.75f).SetEase(Ease.OutQuad));
+        seq.Join(card.transform.DOMove(card.transform.position-new Vector3(0,3,0),0.75f).SetEase(Ease.OutQuad));
         seq.Append(card.transform.DORotate(new Vector3(0,180,0),0.5f));
-        yield return new WaitForSeconds(0.95f);
+        seq.Append(card.transform.DOScale(new Vector3(0.3f,0.3f,0),0.1f));
+        yield return new WaitForSeconds(0.96f);
         card.GetComponent<SpriteRenderer>().flipX=true;
         card.GetComponent<SpriteRenderer>().sprite=cardscript.cardFront;
+        
     }
 
     // ���� : PlayerManager.destroyCard()
