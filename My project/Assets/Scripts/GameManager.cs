@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if(timeron) {
             time+=Time.deltaTime;
             if(time>=30) {
-                if(PV.IsMine) endMyTurn();
+                if(isMyTurn) endMyTurn();
             }
         }
     }

@@ -398,7 +398,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     // 기능 : 화면에 텍스트를 출력하고 1초 뒤 없앰
     IEnumerator printString(string str)
     {
-        var textInfo = Instantiate(WarningText, new Vector3(0,-550,0), Quaternion.identity);
+        var textInfo = Instantiate(WarningText, new Vector3(100,-550,0), Quaternion.identity);
         textInfo.transform.SetParent(GamePannel.transform.parent.transform,false);
         var text = textInfo.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
         text.text = str;
@@ -577,7 +577,10 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         PlayerManager.myPlayerManager.drawready=true;
         this.gameObject.GetComponent<AudioSource>().Play();
         PV.RPC("drawsyncro", RpcTarget.OthersBuffered);
-        if(PlayerManager.myPlayerManager.drawready==true && PlayerManager.enemyPlayerManager.drawready==true) GameManager.instance.draw();
+        if(PlayerManager.myPlayerManager.drawready==true && PlayerManager.enemyPlayerManager.drawready==true) {
+            GameManager.instance.draw();
+            PV.RPC("drawstop", RpcTarget.AllBuffered);
+        }
         
         
     }
@@ -586,6 +589,10 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
         this.gameObject.GetComponent<AudioSource>().Play();
         PlayerManager.enemyPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.enemyPlayerManager.drawimg;
         PlayerManager.enemyPlayerManager.drawready=true;
+    }
+
+    [PunRPC] void drawstop() {
+        this.gameObject.GetComponent<AudioSource>().Stop();
     }
 
     // 기능 : 
