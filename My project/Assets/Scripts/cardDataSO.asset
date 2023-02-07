@@ -40,3 +40,6 @@ MonoBehaviour:
   - name: "\uC601\uC5ED \uAD50\uCCB4"
     indexNum: 8
     sprite: {fileID: 21300000, guid: c59e0769f093bce4d9843c64135bbf64, type: 3}
+  - name: "3*3\uC228\uAE30\uAE30"
+    indexNum: 9
+    sprite: {fileID: 21300000, guid: 456374b7c1f51224cbbc9c3f997ee819, type: 3}

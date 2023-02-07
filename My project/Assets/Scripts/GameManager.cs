@@ -136,6 +136,31 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             gomokuTable[i].interactable=false;
         }
+
+        if (isHideBoxEnabled)
+        {
+            hideBoxLeftTurns -= 1f;
+            PV.RPC("setHideBoxLeftTurns", RpcTarget.AllBuffered, hideBoxLeftTurns);
+
+
+            if (hideBoxLeftTurns < 0f) 
+            {
+                PV.RPC("setIsHideBoxEnabled", RpcTarget.AllBuffered, false);
+                PV.RPC("moveHideBox", RpcTarget.AllBuffered, new Vector3(-10, -10, 0));
+            }
+        }
+        if (isHideBox2Enabled)
+        {
+            hideBox2LeftTurns -= 1f;
+            PV.RPC("setHideBox2LeftTurns", RpcTarget.AllBuffered, hideBox2LeftTurns);
+
+            if (hideBox2LeftTurns < 0f)
+            {
+                PV.RPC("setIsHideBox2Enabled", RpcTarget.AllBuffered, false);
+                PV.RPC("moveHideBox2", RpcTarget.AllBuffered, new Vector3(-12, -12, 0));
+            }
+        }
+
         StartCoroutine("turndelay");
     }
 
@@ -149,7 +174,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region 오목관련+카드
     public enum MyHandStatus{
         cannotUseCard = -1,  // 카드를 쓰면 안되는 상태 (상대턴이거나 혹은 내 턴인데 이미 카드를 쓴 경우)
-        reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone2_2, allRandomRelocate, deleteCross, stoneExchange, exchangeArea2_2  // 카드 종류
+        reassignment3_3, deleteVertical, putStoneTwice, changeEnemyStone, reverseStone2_2, allRandomRelocate, deleteCross, stoneExchange, exchangeArea2_2, hide3_3  // 카드 종류
     }
 
 
@@ -163,6 +188,7 @@ public class GameManager : MonoBehaviourPunCallbacks
      * deleteCross : 십자가 줄 상의 모든 돌을 삭제하는 카드 (9) : index 6
      * stoneExchange : 상대의 돌 1개와 내 돌 1개 위치 변환하는 카드 (6) : index 7
      * exchangeArea2_2 : 원하는 2*2 영역의 돌들을 다른 2*2 영역의 돌들과 교체하는 카드 (7) : index 8
+     * hide3_3 : 3*3 영역의 모든 돌이 3턴동안 보이지 않게 가리는 카드 (10) : index 9
      */
 
 
@@ -275,6 +301,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     public bool putStoneTwice = true;  // 돌을 2번 둘지 여부 (기본값 : true)
     public GameObject bluebox3_3;  // 영역 선택 박스
     public GameObject areaboxPlus;  // 영역 선택 박스 2 (보조)
+
+    // 영역 숨기기 카드 관련 변수
+    public GameObject hideBox;
+    public GameObject hideBox2;
+    bool isHideBoxEnabled = false;
+    bool isHideBox2Enabled = false;
+    float hideBoxLeftTurns;
+    float hideBox2LeftTurns;
 
     // 구현 완료된 카드 : 1, 2, 3, 4, 5, 6, 7, 8, 9
     // 미구현 :  10
@@ -808,6 +842,55 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                         // 오목판 다시 그림
                         PV.RPC("reNewalBoard", RpcTarget.AllBuffered);
+                        endMyTurn();  // 턴을 끝냄
+                    }
+                }
+
+                break;
+
+
+            case MyHandStatus.hide3_3:
+                if (i == 0 || i == 8 || j == 0 || j == 8)
+                {
+                    NetWorkManager.instance.printScreenString("다시 선택하세요");
+                    return;
+                }
+                else
+                {
+                    if (!areaSelected || (areaSelected && selectedBTNindex != (i + j * 9))) // 아직 영역을 선택하지 않았거나. 이전과 다른 버튼을 클릭한 경우
+                    {
+                        PV.RPC("AreaBox_set3_3", RpcTarget.AllBuffered);   // 영역 선택 박스를 바둑판 3*3 크기의 정사각형으로 바꿈
+                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));  // 영역 박스를 지금 선택한 버튼의 위치로 변경함
+                        areaSelected = true;
+                        selectedBTNindex = i + j * 9;
+                        NetWorkManager.instance.printScreenString("선택됨");
+                    }
+                    else  // 영역을 선택한 상태에서 같은 버튼을 다시 누른 경우 → 카드 발동
+                    {
+                        PV.RPC("moveAreaBox", RpcTarget.AllBuffered, new Vector3(10, 10, 0));  // 영역 박스를 안보이는 위치로 치움
+                        unInteractableAllBTN();
+                        areaSelected = false; selectedBTNindex = -1;
+                        myHandStatus = MyHandStatus.cannotUseCard;  // 초기화
+
+                        if (isHideBoxEnabled == false && isHideBox2Enabled == false)
+                        {
+                            PV.RPC("setIsHideBoxEnabled", RpcTarget.AllBuffered, true);
+                            PV.RPC("setHideBoxLeftTurns", RpcTarget.AllBuffered, 3f);
+                            PV.RPC("moveHideBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+                        }
+                        else if (isHideBoxEnabled)
+                        {
+                            PV.RPC("setIsHideBox2Enabled", RpcTarget.AllBuffered, true);
+                            PV.RPC("setHideBox2LeftTurns", RpcTarget.AllBuffered, 3f);
+                            PV.RPC("moveHideBox2", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+                        }
+                        else if (isHideBox2Enabled)
+                        {
+                            PV.RPC("setIsHideBoxEnabled", RpcTarget.AllBuffered, true);
+                            PV.RPC("setHideBoxLeftTurns", RpcTarget.AllBuffered, 3f);
+                            PV.RPC("moveHideBox", RpcTarget.AllBuffered, new Vector3(-2.21f + 0.55f * i, 2.21f - 0.55f * j, 0));
+                        }
+
                         endMyTurn();  // 턴을 끝냄
                     }
                 }
@@ -1409,6 +1492,43 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         AreaBoxPlus.instance.setSize1_1();
     }
+
+    #endregion
+
+    #region 숨기기박스
+
+    // 숨기기 박스 관련 함수들
+    [PunRPC] void moveHideBox(Vector3 newposition)
+    {
+        hideBox.transform.position = newposition;
+    }
+
+    [PunRPC] void moveHideBox2(Vector3 newposition)
+    {
+        hideBox2.transform.position = newposition;
+    }
+
+    [PunRPC] void setIsHideBoxEnabled(bool enabled)
+    {
+        isHideBoxEnabled = enabled;
+    }
+
+    [PunRPC] void setIsHideBox2Enabled(bool enabled)
+    {
+        isHideBox2Enabled = enabled;
+    }
+
+    [PunRPC] void setHideBoxLeftTurns(float value)
+    {
+        hideBoxLeftTurns = value;
+    }
+
+    [PunRPC] void setHideBox2LeftTurns(float value)
+    {
+        hideBox2LeftTurns = value;
+    }
+
+
 
 
 

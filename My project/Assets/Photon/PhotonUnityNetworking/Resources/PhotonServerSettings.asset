@@ -71,6 +71,14 @@ MonoBehaviour:
   - AreaBoxPlus_set1_1
   - timermake
   - drawstop
+  - moveHideBox
+  - moveHideBox2
+  - runHideBox
+  - runHideBox2
+  - setHideBox2LeftTurns
+  - setHideBoxLeftTurns
+  - setIsHideBox2Enabled
+  - setIsHideBoxEnabled
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

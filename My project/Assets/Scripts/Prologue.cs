@@ -35,7 +35,10 @@ public class Prologue : MonoBehaviour
         if (playerData.playeraHasPlayedTuitorial)
             SceneManager.LoadScene("Start");
         else
-            num = 0;
+        {
+            num = 1;
+            image_list[0].SetActive(true);
+        }
 
         isNotFirst = playerData.isNotFirst;
 
@@ -51,7 +54,7 @@ public class Prologue : MonoBehaviour
         {
             if (truckWait)
             {
-                if (time > 0.2f)
+                if (time > 2f)
                 {
                     GoNext();
                     time = 0;
@@ -60,13 +63,21 @@ public class Prologue : MonoBehaviour
             }
             else
             {
-                if (time > 0.07f)
+                if (time > 0.7f)
                 {
                     GoNext();
                     print(time); time = 0;
                 }
             }
             this.gameObject.GetComponent<AudioSource>().Play();
+
+            if (isNotFirst && CharacterExplain.activeSelf)
+            {
+                if (isCharacterExplain)
+                    SceneManager.LoadScene("Start");
+                else
+                    isCharacterExplain = true;
+            }
         }
 
         if (!isNotFirst)
@@ -95,7 +106,7 @@ public class Prologue : MonoBehaviour
 
     void disableAllPannels()
     {
-        for (int i = 0; i < 14; i++)
+        for (int i = 1; i < 14; i++)
             image_list[i].SetActive(false);
 
         CharacterExplain.SetActive(false);
@@ -145,13 +156,12 @@ public class Prologue : MonoBehaviour
             for (int i = 12; i < 14; i++)
                 image_list[i].SetActive(false);
 
-            if (!isNotFirst)
+            if (!isNotFirst)  // 맨 처음 게임을 시작했을 때만 여기로 들어옴
             {
                 CharacterExplain.SetActive(true);
 
                 playerData.name = "test";
                 playerData.playeraHasPlayedTuitorial = true;
-                playerData.isNotFirst = true;
                 playerData.mastervol = 1f;
                 playerData.sfxvol = 1f;
                 playerData.bgmvol = 1f;
@@ -163,7 +173,9 @@ public class Prologue : MonoBehaviour
                 playerData.playeraHasPlayedTuitorial = true;
                 SavePlayerDataToJson();
 
-                SceneManager.LoadScene("Start");
+                CharacterExplain.SetActive(true);
+
+                //SceneManager.LoadScene("Start");
             }
         }
     }

@@ -467,7 +467,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -280, y: -230}
+  m_AnchoredPosition: {x: -280, y: -310}
   m_SizeDelta: {x: 700, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &157814475
@@ -625,7 +625,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC774\uB984 : \uB9C8 \uBC84\uBE10 \uB9C8\uB9AC\uC544 (Ma Burbn Maria)"
+  m_text: "\uC774\uB984 : \uB9C8 \uBC84\uBE10 \uB9C8\uB9AC\uC544 \n        (Ma Burbn
+    Maria)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 51353e82b68447f428e8d170d5691111, type: 2}
   m_sharedMaterial: {fileID: -3345219437094877147, guid: 51353e82b68447f428e8d170d5691111, type: 2}
@@ -1049,7 +1050,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -381, y: 529}
+  m_AnchoredPosition: {x: -381, y: 491}
   m_SizeDelta: {x: 400, y: 880}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &378747864
@@ -1206,7 +1207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &424702014
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2002,7 +2003,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 332, y: -396}
+  m_AnchoredPosition: {x: 332, y: -434}
   m_SizeDelta: {x: 400, y: 880}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &687742670
@@ -2331,7 +2332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -280, y: -340}
+  m_AnchoredPosition: {x: -280, y: -420}
   m_SizeDelta: {x: 700, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &832475894
@@ -2354,7 +2355,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "MBTI : ESFP \uC790\uC720\uB85C\uC6B4 \uC601\uD63C\uC758 \uC288\uD37C\uC2A4\uD0C0"
+  m_text: "MBTI : ESFP \uC790\uC720\uB85C\uC6B4 \uC601\uD63C\uC758 \n           \uC288\uD37C\uC2A4\uD0C0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 51353e82b68447f428e8d170d5691111, type: 2}
   m_sharedMaterial: {fileID: -3345219437094877147, guid: 51353e82b68447f428e8d170d5691111, type: 2}
@@ -3259,7 +3260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -280, y: -440}
+  m_AnchoredPosition: {x: -280, y: -570}
   m_SizeDelta: {x: 700, y: 300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1128026114
@@ -3282,7 +3283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB099\uCC9C\uC801\uC774\uACE0 \uCF8C\uD65C\uD558\uBA70 \uC989\uD765\uC801\uC778
+  m_text: "\uB099\uCC9C\uC801\uC774\uACE0 \uCF8C\uD65C\uD558\uBA70 \n\uC989\uD765\uC801\uC778
     \uC131\uACA9\n\uBC18\uD56D\uC815\uC2E0\uC774 \uC788\uC5B4\uC11C \uAD50\uBCF5\uC744
     \uB611\uBC14\uB85C \uC785\uC9C0 \uC54A\uB294\uB2E4"
   m_isRightToLeft: 0
