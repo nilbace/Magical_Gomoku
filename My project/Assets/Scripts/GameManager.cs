@@ -1321,6 +1321,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         moveAreaBox(new Vector3(10, 10, 0));
         moveAreaBoxPlus(new Vector3(12, 10, 0));
 
+        NetWorkManager.instance.pausePannel.SetActive(false);
+
         ResultTMP.text = result;
 
         var resultBg = ResultPannelBg.GetComponent<Image>();

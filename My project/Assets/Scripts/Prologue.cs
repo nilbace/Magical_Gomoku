@@ -23,19 +23,23 @@ public class Prologue : MonoBehaviour
 
     public GameObject CharacterExplain;
     public GameObject GameExplain;
+    public Image proColor;
     bool isCharacterExplain = false;
     bool truckWait = false;
     bool isNotFirst;
+    public GameObject touchTMP;
 
     // Start is called before the first frame update
     void Start()
     {
         setResolution(); 
         LoadPlayerDatafromJson();
+
         if (playerData.playeraHasPlayedTuitorial)
             SceneManager.LoadScene("Start");
         else
         {
+            proColor.color = Color.white;
             num = 1;
             image_list[0].SetActive(true);
         }
@@ -52,6 +56,8 @@ public class Prologue : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            touchTMP.SetActive(false);
+
             if (truckWait)
             {
                 if (time > 2f)
@@ -213,10 +219,17 @@ public class Prologue : MonoBehaviour
             path = Path.Combine(Application.dataPath, "playerData.json");
         }
 
+        if(!File.Exists(path))
+        {
+            proColor.color = Color.white;
+            return;
+        }
+
         FileStream fileStream = new FileStream(path, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
+        print(fileStream.ToString());
         string jsonData = Encoding.UTF8.GetString(data);
 
         playerData = JsonUtility.FromJson<PlayerData>(jsonData);
