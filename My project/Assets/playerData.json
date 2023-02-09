@@ -1,6 +1,6 @@
 {
     "name": "test",
-    "playeraHasPlayedTuitorial": true,
+    "playeraHasPlayedTuitorial": false,
     "isNotFirst": true,
     "mastervol": 1.0,
     "sfxvol": 1.0,
