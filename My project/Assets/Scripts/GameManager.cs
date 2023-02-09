@@ -1320,6 +1320,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         // 영역 박스를 보이지 않는 곳으로 치움
         moveAreaBox(new Vector3(10, 10, 0));
         moveAreaBoxPlus(new Vector3(12, 10, 0));
+        moveHideBox(new Vector3(12, 10, 0));
+        moveHideBox2(new Vector3(12, 10, 0));
 
         NetWorkManager.instance.pausePannel.SetActive(false);
 
