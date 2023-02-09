@@ -574,6 +574,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     public void draw() 
     {
         PlayerManager.myPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.myPlayerManager.drawimg;
+        PlayerManager.myPlayerManager.character_img.GetComponent<SpriteRenderer>().transform.localScale=new Vector3(0.15f,0.15f,0.15f);
         PlayerManager.myPlayerManager.drawready=true;
         this.gameObject.GetComponent<AudioSource>().Play();
         PV.RPC("drawsyncro", RpcTarget.OthersBuffered);
@@ -588,6 +589,7 @@ public class NetWorkManager : MonoBehaviourPunCallbacks
     [PunRPC] void drawsyncro() {
         this.gameObject.GetComponent<AudioSource>().Play();
         PlayerManager.enemyPlayerManager.character_img.GetComponent<SpriteRenderer>().sprite=PlayerManager.enemyPlayerManager.drawimg;
+        PlayerManager.enemyPlayerManager.character_img.GetComponent<SpriteRenderer>().transform.localScale=new Vector3(0.15f,0.15f,0.15f);
         PlayerManager.enemyPlayerManager.drawready=true;
     }
 

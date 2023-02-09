@@ -1331,6 +1331,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             resultBg.sprite = winImage;
             ResultTMP.text = "";  // 임시
             ResultPannel.SetActive(true);  // 게임 결과 패널 활성화
+            NetWorkManager.instance.GamePannel.GetComponent<AudioSource>().Stop();
             ResultPannel.gameObject.GetComponent<AudioSource>().Play();
         }
         else if(result == "무승부")
