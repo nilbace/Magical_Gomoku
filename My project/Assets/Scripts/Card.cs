@@ -30,9 +30,9 @@ public class Card : MonoBehaviourPunCallbacks
         this.cardFront = cardData.sprite;
         sfx=this.gameObject.GetComponent<AudioSource>();
 
-        if(this.isMine)  // 카드 앞면
+        if(isMine)  // 카드 앞면
         {
-            cardSprite.sprite = this.cardData.sprite;
+            cardSprite.sprite = cardData.sprite;
         }
         else  // 카드 뒷면
         {

@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void Start() {
         if(PV.IsMine){ 
-            SetupItemBuffer();  // cardDataBuffoer�� ��� CardData���� �����ϰ� ����
+            SetupItemBuffer();  
             cardindex =new int[cardDataBuffer.Count];
             for(int i=0; i<cardDataBuffer.Count; i++) {
                 cardindex[i]=cardDataBuffer[i].indexNum;
@@ -54,18 +54,22 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         
         transform.position = new Vector3(-2,-3.8f);
+
+        //내 캐릭터라면
+        //캐릭터의 위치와 카드 정렬 지점 설정
         if(PV.IsMine)
         {
             transform.position = new Vector3(-2,-3.8f,80);
             myCardsLeft = new Vector3(-0.5f,-3.9f,0);
             myCardsRight = new Vector3(2.24f,-3.9f,0);
         }
+        //내 캐릭터가 아닐때
+        //캐릭터 위치와 카드 정렬 지점 설정
         else
         {
             transform.position = new Vector3(2f,3.5f,80);
             myCardsLeft = new Vector3(-2f,3.3f,0);
             myCardsRight = new Vector3(1f,3.3f,0);
-
         }
     }
 
